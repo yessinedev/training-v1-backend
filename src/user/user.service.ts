@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma/prisma.service';
-import { ClerkService } from 'src/clerk/clerk/clerk.service';
+import { ClerkService } from 'src/clerk/clerk.service';
 
 @Injectable()
 export class UserService {
@@ -63,7 +63,11 @@ export class UserService {
   }
 
   async findAll() {
-    return await this.prisma.user.findMany();
+    return await this.prisma.user.findMany({
+      include: {
+        role: true,
+      },
+    });
   }
 
   async findOne(id: string) {

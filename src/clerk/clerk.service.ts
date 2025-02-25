@@ -9,16 +9,16 @@ export class ClerkService {
   private clerkClient: ClerkClient;
 
   constructor() {
-    this.clerkClient = createClerkClient({secretKey: CLERK_API_KEY})
+    this.clerkClient = createClerkClient({ secretKey: CLERK_API_KEY });
   }
 
   async createUser(data: CreateClerkUserDto) {
     return await this.clerkClient.users.createUser({
-        firstName: data.firstName,
-        lastName: data.lastName,
-        emailAddress: [data.email],
-        publicMetadata: { role_id: data.role.role_name },
-        privateMetadata: { role_id: data.role.role_id },
+      firstName: data.firstName,
+      lastName: data.lastName,
+      emailAddress: [data.email],
+      publicMetadata: { role_name: data.role.role_name },
+      privateMetadata: { role_id: data.role.role_id },
     });
   }
 }

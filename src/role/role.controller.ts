@@ -10,27 +10,35 @@ import {
   ParseIntPipe,
   UsePipes,
   ValidationPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { RoleService } from './role.service';
 import { CreateRoleDto } from './dto/create-role.dto';
+import { ClerkAuthGuard } from 'src/guards/clerk.guard';
+import { RolesGuard } from 'src/guards/role.guard';
+import { Roles } from 'src/decorators/role.decorator';
 
 @Controller('roles')
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}
 
   @Get()
+  @UseGuards(ClerkAuthGuard, RolesGuard)
+  @Roles('ADMIN')
   async getAllRoles() {
     return this.roleService.getAllRoles();
   }
 
   @Post()
-  @UsePipes(new ValidationPipe({ whitelist: true }))  // 🚀 Enables DTO validation
+  @UseGuards(ClerkAuthGuard, RolesGuard)
+  @Roles('ADMIN')
   async createRole(@Body() createRoleDto: CreateRoleDto) {
     return this.roleService.createRole(createRoleDto);
   }
 
   @Put(':id')
-  @UsePipes(new ValidationPipe({ whitelist: true }))
+  @UseGuards(ClerkAuthGuard, RolesGuard)
+  @Roles('ADMIN')
   async updateRole(
     @Param('id', ParseIntPipe) role_id: number,
     @Body() updateRoleDto: CreateRoleDto,
@@ -39,6 +47,8 @@ export class RoleController {
   }
 
   @Delete()
+  @UseGuards(ClerkAuthGuard, RolesGuard)
+  @Roles('ADMIN')
   async deleteRole(@Query('id', ParseIntPipe) role_id: number) {
     return this.roleService.deleteRole(role_id);
   }

@@ -6,21 +6,29 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ClerkAuthGuard } from 'src/guards/clerk.guard';
+import { Roles } from 'src/decorators/role.decorator';
+import { RolesGuard } from 'src/guards/role.guard';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('create')
+  @UseGuards(ClerkAuthGuard, RolesGuard)
+  @Roles('ADMIN')
   async create(@Body() createUserDto: CreateUserDto) {
     return await this.userService.create(createUserDto);
   }
 
   @Get('all')
+  @UseGuards(ClerkAuthGuard, RolesGuard)
+  @Roles('ADMIN')
   async findAll() {
     return await this.userService.findAll();
   }
