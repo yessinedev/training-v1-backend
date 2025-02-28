@@ -22,10 +22,7 @@ export class UserService {
         throw new Error('Role not found');
       }
 
-      // Create user in Clerk
       const clerkUser = await this.clerkService.createUser({
-        firstName: createUserDto.prenom,
-        lastName: createUserDto.nom,
         email: createUserDto.email,
         role: {
           role_id: userRole?.role_id!,
@@ -33,17 +30,14 @@ export class UserService {
         },
       });
 
-      // Extract user data
       const user_id = clerkUser.id;
       const email = createUserDto.email;
       const prenom = createUserDto.prenom;
       const nom = createUserDto.nom;
-      const telephone = createUserDto.telephone || ''; // Default to empty string if not provided
+      const telephone = createUserDto.telephone || '';
       let role_id = createUserDto.role_id;
 
-      // Validate role_id against Role table
-
-      // Create user in Prisma
+      
       await this.prisma.user.create({
         data: {
           user_id,

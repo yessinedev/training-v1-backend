@@ -30,7 +30,7 @@ export class RolesGuard implements CanActivate {
     }
 
     // Get single role from Clerk user metadata
-    const userRole = user.publicMetadata?.role_name;
+    const userRole = user.publicMetadata?.role.role_name;
     // console.log('user-role', userRole);
     if (!userRole) {
       throw new ForbiddenException('User role not found');

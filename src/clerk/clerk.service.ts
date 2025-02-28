@@ -13,12 +13,13 @@ export class ClerkService {
   }
 
   async createUser(data: CreateClerkUserDto) {
-    return await this.clerkClient.users.createUser({
-      firstName: data.firstName,
-      lastName: data.lastName,
-      emailAddress: [data.email],
-      publicMetadata: { role_name: data.role.role_name },
-      privateMetadata: { role_id: data.role.role_id },
+    return await this.clerkClient.invitations.createInvitation({
+      emailAddress: data.email,
+      publicMetadata: { role: {
+        role_name: data.role.role_name,
+        role_id: data.role.role_id,
+      }},
+      redirectUrl: 'http://localhost:3000/sign-in',
     });
   }
 }
