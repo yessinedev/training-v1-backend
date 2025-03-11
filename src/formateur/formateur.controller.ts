@@ -53,7 +53,6 @@ export class FormateurController {
         'formateurs/cv',
         cvFile.mimetype,
       );
-      console.log(uploads);
     }
 
     if (badgeFile) {
@@ -62,7 +61,6 @@ export class FormateurController {
         'formateurs/badges',
         badgeFile.mimetype,
       );
-      console.log(uploads);
     }
 
     return this.formateurService.create({

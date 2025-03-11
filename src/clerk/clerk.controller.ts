@@ -32,6 +32,24 @@ export class ClerkController {
           user_id: finalUserId,
         },
       });
+      
+      await this.prisma.participant.update({
+        where: {
+          user_id: user.user_id,
+        },
+        data: {
+          user_id: finalUserId,
+        },
+      });
+
+      await this.prisma.formateur.update({
+        where: {
+          user_id: user.user_id,
+        },
+        data: {
+          user_id: finalUserId,
+        },
+      });
 
       console.log(`User created: ${finalUserId} (${email})`);
     }
