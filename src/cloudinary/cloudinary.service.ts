@@ -18,6 +18,7 @@ export class CloudinaryService {
   ): Promise<string> {
     const base64 = `data:${mimeType};base64,${file.toString('base64')}`;
     const result = await cloudinary.uploader.upload(base64, { folder });
+    console.log("result", result.secure_url);
     return result.secure_url;
   }
 

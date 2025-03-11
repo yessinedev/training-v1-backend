@@ -1,8 +1,8 @@
-import { IsInt, IsPositive, IsOptional, IsString } from 'class-validator';
+import { IsInt, IsPositive, IsOptional, IsString, IsNotEmpty } from 'class-validator';
 
 export class CreateFormateurDto {
-  @IsInt()
-  @IsPositive()
+  @IsNotEmpty()
+  @IsString()
   user_id: string;
 
   @IsOptional()

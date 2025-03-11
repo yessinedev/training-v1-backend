@@ -37,7 +37,6 @@ export class UserService {
       const telephone = createUserDto.telephone || '';
       let role_id = createUserDto.role_id;
 
-      
       await this.prisma.user.create({
         data: {
           user_id,
@@ -56,8 +55,9 @@ export class UserService {
     }
   }
 
-  async findAll() {
+  async findAll(roleId?: string) {
     return await this.prisma.user.findMany({
+      where: roleId ? { role_id: +roleId } : {},
       include: {
         role: true,
       },

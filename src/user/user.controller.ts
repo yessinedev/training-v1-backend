@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -29,8 +30,8 @@ export class UserController {
   @Get('all')
   @UseGuards(ClerkAuthGuard, RolesGuard)
   @Roles('ADMIN')
-  async findAll() {
-    return await this.userService.findAll();
+  async findAll(@Query('roleId') roleId?: string) {
+    return await this.userService.findAll(roleId);
   }
 
   @Get(':id')
