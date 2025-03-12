@@ -1,4 +1,11 @@
-import { IsEmail, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import {
+  IsEmail,
+  IsNumber,
+  isNumber,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 
 export class CreateParticipantDto {
   @IsString()
@@ -22,4 +29,6 @@ export class CreateParticipantDto {
 
   @IsString()
   poste: string;
+  @IsNumber()
+  role_id: number;
 }

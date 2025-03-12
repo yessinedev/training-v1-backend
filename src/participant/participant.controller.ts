@@ -3,28 +3,30 @@ import {
   Get,
   Post,
   Body,
-  Patch,
-  Param,
-  Delete,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { ParticipantService } from './participant.service';
 import { CreateParticipantDto } from './dto/create-participant.dto';
-import { UpdateParticipantDto } from './dto/update-participant.dto';
 
 @Controller('participant')
 export class ParticipantController {
   constructor(private readonly participantService: ParticipantService) {}
 
   @Post('create')
-  create(@Body() createParticipantDto: CreateParticipantDto) {
-    return this.participantService.createParticipantAndUser(
-      createParticipantDto,
-    );
-  }
-
-  @Post('create/many')
-  createMany(@Body() createParticipantDto: CreateParticipantDto[]) {
-    return this.participantService.createManyParticipants(createParticipantDto);
+  @HttpCode(HttpStatus.CREATED)
+  async createParticipants(
+    @Body() createDto: CreateParticipantDto | CreateParticipantDto[],
+  ) {
+    if (Array.isArray(createDto)) {
+      const { successful, failed } =
+        await this.participantService.createManyParticipants(createDto);
+      return { successful, failed };
+    } else {
+      const participant =
+        await this.participantService.createParticipantAndUser(createDto);
+      return participant;
+    }
   }
 
   @Get()

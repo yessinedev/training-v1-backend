@@ -9,7 +9,13 @@ import { ClerkModule } from './clerk/clerk.module';
 import { ParticipantModule } from './participant/participant.module';
 
 @Module({
-  imports: [RoleModule, UserModule, FormateurModule, ClerkModule, ParticipantModule],
+  imports: [
+    RoleModule,
+    UserModule,
+    FormateurModule,
+    ClerkModule,
+    ParticipantModule,
+  ],
   controllers: [AppController],
   providers: [AppService, ClerkService],
 })
