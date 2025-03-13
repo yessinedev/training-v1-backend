@@ -28,8 +28,8 @@ export class UserController {
   }
 
   @Get('all')
-  @UseGuards(ClerkAuthGuard, RolesGuard)
-  @Roles('ADMIN')
+  // @UseGuards(ClerkAuthGuard, RolesGuard)
+  // @Roles('ADMIN')
   async findAll(@Query('roleId') roleId?: string) {
     return await this.userService.findAll(roleId);
   }
