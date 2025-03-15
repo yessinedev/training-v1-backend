@@ -6,11 +6,12 @@ import {
   Param,
   Body,
   Query,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ActionFfService } from './action-ff.service';
 import { ActionFfDto } from './dto/create-action-ff.dto';
 
-@Controller("formations/:formationId/formateurs")
+@Controller('formations/:formationId/formateurs')
 export class ActionFfController {
   constructor(private readonly actionFfService: ActionFfService) {}
 
@@ -21,10 +22,10 @@ export class ActionFfController {
 
   @Post()
   async create(
-    @Param('formationId') formationId: string,
-    @Body() createActionFfDto: ActionFfDto,
+    @Param('formationId', ParseIntPipe) formationId: number,
+    @Body() formateurId: string,
   ) {
-    return await this.actionFfService.create(formationId, createActionFfDto);
+    return await this.actionFfService.create(formationId, formateurId);
   }
 
   @Delete()

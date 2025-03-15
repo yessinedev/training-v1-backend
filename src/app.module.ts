@@ -12,6 +12,7 @@ import { ThemeModule } from './theme/theme.module';
 import { FormationModule } from './formation/formation.module';
 import { ActionFfModule } from './action-ff/action-ff.module';
 import { ActionFpModule } from './action-fp/action-fp.module';
+import { AttestationModule } from './attestation/attestation.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { ActionFpModule } from './action-fp/action-fp.module';
     FormationModule,
     ActionFfModule,
     ActionFpModule,
+    AttestationModule,
   ],
   controllers: [AppController],
   providers: [AppService, ClerkService],

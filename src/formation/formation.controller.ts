@@ -30,8 +30,8 @@ export class FormationController {
     return this.formationService.update(action_id, updateFormationDto);
   }
 
-  @Delete()
-  async deleteFormation(@Query('id', ParseIntPipe) action_id: number) {
+  @Delete(':id')
+  async deleteFormation(@Param('id', ParseIntPipe) action_id: number) {
     return this.formationService.delete(action_id);
   }
 }

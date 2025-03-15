@@ -31,7 +31,7 @@ export class CreateFormationDto {
   @IsPositive()
   nb_participants_prevu: number;
 
-  @IsInt()
+  @IsString()
   @IsOptional()
   user_id?: string;
 }

@@ -19,11 +19,11 @@ export class ActionFfService {
     });
   }
 
-  async create(formationId: string, dto: ActionFfDto) {
+  async create(formationId: number, formateurId: string) {
     return await this.prisma.actionFormationFormateur.create({
       data: {
-        action_id: parseInt(formationId),
-        formateur_id: dto.formateur_id,
+        action_id: formationId,
+        formateur_id: formateurId,
       },
       include: {
         formateur: {
