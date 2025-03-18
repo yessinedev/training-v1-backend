@@ -9,7 +9,9 @@ export class AttestationService {
     return await this.prisma.attestation.findMany({
       where: { action_id: formationId },
       include: {
-        participant: true,
+        participant: {
+          include: { user: true}
+        },
         action: { include: { theme: true } },
       },
       orderBy: { date_emission: 'desc' },

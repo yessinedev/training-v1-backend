@@ -6,7 +6,10 @@ import { ActionFfService } from 'src/action-ff/action-ff.service';
 
 @Injectable()
 export class FormationService {
-  constructor(private prisma: PrismaService, private actionFfService: ActionFfService) {}
+  constructor(
+    private prisma: PrismaService,
+    private actionFfService: ActionFfService,
+  ) {}
 
   async getAll() {
     return this.prisma.actionFormation.findMany({
@@ -52,8 +55,8 @@ export class FormationService {
   }
 
   async create(data: CreateFormationDto) {
-    const { user_id, ...formationData } = data; // Extract user_id to avoid passing it to ActionFormation
-  
+    const { user_id, ...formationData } = data;
+
     const actionFormation = await this.prisma.actionFormation.create({
       data: {
         ...formationData,
@@ -65,20 +68,13 @@ export class FormationService {
         formateurs: { include: { formateur: { include: { user: true } } } },
       },
     });
-  
-    // If a formateur (user_id) is provided, create the relation
+
     if (user_id) {
-      await this.prisma.actionFormationFormateur.create({
-        data: {
-          action_id: actionFormation.action_id,
-          formateur_id: user_id,
-        },
-      });
+      await this.actionFfService.create(actionFormation.action_id, user_id);
     }
-  
+
     return actionFormation;
   }
-  
 
   async update(id: number, data: UpdateFormationDto) {
     await this.prisma.actionFormationFormateur.deleteMany({

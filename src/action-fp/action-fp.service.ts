@@ -1,6 +1,13 @@
-import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
-import { PrismaService } from "src/prisma/prisma/prisma.service";
-import { AddParticipantDto, UpdateParticipantStatusDto } from "./dto/action-fp.dto";
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma/prisma.service';
+import {
+  AddParticipantDto,
+  UpdateParticipantStatusDto,
+} from './dto/action-fp.dto';
 
 @Injectable()
 export class ActionFpService {
@@ -10,35 +17,50 @@ export class ActionFpService {
   async getParticipants(formationId: number) {
     const participants = await this.prisma.actionFormationParticipant.findMany({
       where: { action_id: formationId },
-      include: { participant: true, action: true },
+      include: {
+        participant: {
+          include: { user: true},
+        },
+        action: true,
+        
+      },
     });
 
     return participants;
   }
 
   // Update a participant's status
-  async updateParticipantStatus(formationId: number, dto: UpdateParticipantStatusDto) {
+  async updateParticipantStatus(
+    formationId: number,
+    dto: UpdateParticipantStatusDto,
+  ) {
     try {
-      const updatedParticipant = await this.prisma.actionFormationParticipant.update({
-        where: {
-          action_id_participant_id: {
-            action_id: formationId,
-            participant_id: dto.participant_id,
+      const updatedParticipant =
+        await this.prisma.actionFormationParticipant.update({
+          where: {
+            action_id_participant_id: {
+              action_id: formationId,
+              participant_id: dto.participant_id,
+            },
           },
-        },
-        data: { statut: dto.statut },
-        include: { participant: true, action: true },
-      });
+          data: { statut: dto.statut },
+          include: { participant: true, action: true },
+        });
 
       return updatedParticipant;
     } catch (error) {
-      throw new NotFoundException("Participant not found or update failed.");
+      throw new NotFoundException('Participant not found or update failed.');
     }
   }
 
   // Add participants to a formation
-  async addParticipants(formationId: number, participants: AddParticipantDto | AddParticipantDto[]) {
-    const participantsArray = Array.isArray(participants) ? participants : [participants];
+  async addParticipants(
+    formationId: number,
+    participants: AddParticipantDto | AddParticipantDto[],
+  ) {
+    const participantsArray = Array.isArray(participants)
+      ? participants
+      : [participants];
 
     if (participantsArray.length === 1) {
       return this.prisma.actionFormationParticipant.create({
@@ -52,18 +74,19 @@ export class ActionFpService {
       });
     }
 
-    const createdParticipants = await this.prisma.actionFormationParticipant.createMany({
-      data: participantsArray.map((p) => ({
-        action_id: formationId,
-        participant_id: p.participant_id,
-        date_inscription: new Date(),
-        statut: p.statut,
-      })),
-      skipDuplicates: true,
-    });
+    const createdParticipants =
+      await this.prisma.actionFormationParticipant.createMany({
+        data: participantsArray.map((p) => ({
+          action_id: formationId,
+          participant_id: p.participant_id,
+          date_inscription: new Date(),
+          statut: p.statut,
+        })),
+        skipDuplicates: true,
+      });
 
     return {
-      message: "Participants added successfully",
+      message: 'Participants added successfully',
       count: createdParticipants.count,
     };
   }
@@ -80,9 +103,9 @@ export class ActionFpService {
         },
       });
 
-      return { message: "Participant removed successfully" };
+      return { message: 'Participant removed successfully' };
     } catch (error) {
-      throw new NotFoundException("Failed to remove participant");
+      throw new NotFoundException('Failed to remove participant');
     }
   }
 }
