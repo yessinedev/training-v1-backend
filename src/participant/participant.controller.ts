@@ -7,6 +7,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { ParticipantService } from './participant.service';
+import { CreateUserParticipantDto } from './dto/create-user-participant.dto';
 import { CreateParticipantDto } from './dto/create-participant.dto';
 
 @Controller('participant')
@@ -16,7 +17,7 @@ export class ParticipantController {
   @Post('create')
   @HttpCode(HttpStatus.CREATED)
   async createParticipants(
-    @Body() createDto: CreateParticipantDto | CreateParticipantDto[],
+    @Body() createDto: CreateParticipantDto | CreateUserParticipantDto[],
   ) {
     if (Array.isArray(createDto)) {
       const { successful, failed } =
@@ -24,7 +25,7 @@ export class ParticipantController {
       return { successful, failed };
     } else {
       const participant =
-        await this.participantService.createParticipantAndUser(createDto);
+        await this.participantService.createParticipant(createDto);
       return participant;
     }
   }

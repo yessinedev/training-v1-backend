@@ -1,9 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateParticipantDto } from './dto/create-participant.dto';
+import { CreateUserParticipantDto } from './dto/create-user-participant.dto';
 import { PrismaService } from 'src/prisma/prisma/prisma.service';
 import { ClerkService } from 'src/clerk/clerk.service';
 import { validateOrReject } from 'class-validator';
 import { UpdateParticipantDto } from './dto/update-participant.dto';
+import { CreateParticipantDto } from './dto/create-participant.dto';
 
 @Injectable()
 export class ParticipantService {
@@ -22,8 +23,17 @@ export class ParticipantService {
     });
   }
 
+  async createParticipant(createDto: CreateParticipantDto) {
+    return await this.prisma.participant.create({
+      data: createDto,
+      include: {
+        user: true,
+      },
+    });
+  }
+
   async createParticipantAndUser(
-    createDto: CreateParticipantDto,
+    createDto: CreateUserParticipantDto,
   ): Promise<any> {
     const userRole = await this.prisma.role.findUnique({
       where: { role_id: createDto.role_id },
@@ -69,7 +79,7 @@ export class ParticipantService {
   }
 
   async createManyParticipants(
-    dtos: CreateParticipantDto[],
+    dtos: CreateUserParticipantDto[],
   ): Promise<{ successful: any[]; failed: any[] }> {
     const results = await Promise.allSettled(
       dtos.map((dto) => this.createParticipantAndUser(dto)),
