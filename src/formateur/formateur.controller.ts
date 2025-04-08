@@ -44,29 +44,12 @@ export class FormateurController {
     @Body() createDto: CreateFormateurDto,
     @UploadedFiles() files: Express.Multer.File[],
   ) {
-    const [cvFile, badgeFile] = files || [];
-    const uploads = {};
-
-    if (cvFile) {
-      uploads['cv_path'] = await this.cloudinaryService.uploadFile(
-        cvFile.buffer,
-        'formateurs/cv',
-        cvFile.mimetype,
-      );
-    }
-
-    if (badgeFile) {
-      uploads['badge_path'] = await this.cloudinaryService.uploadFile(
-        badgeFile.buffer,
-        'formateurs/badges',
-        badgeFile.mimetype,
-      );
-    }
-
-    return this.formateurService.create({
-      ...createDto,
-      ...uploads,
-    });
+    return this.formateurService.create(
+      {
+        ...createDto,
+      },
+      files,
+    );
   }
 
   @Put(':id')

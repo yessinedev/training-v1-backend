@@ -11,11 +11,4 @@ export class CreateFormateurDto {
   @IsString()
   user_id: string;
 
-  @IsOptional()
-  @IsString()
-  cv_path?: string;
-
-  @IsOptional()
-  @IsString()
-  badge_path?: string;
 }

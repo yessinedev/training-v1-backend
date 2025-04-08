@@ -9,8 +9,7 @@ datasource db {
 
 model Role {
   role_id   Int    @id @default(autoincrement())
-  role_name String @db.VarChar(50)
-
+  role_name RoleName @unique
   users User[]
 }
 
@@ -29,12 +28,12 @@ model User {
 
 model Formateur {
   user_id    String  @id
-  cv_path    String? @db.VarChar(255)
-  badge_path String? @db.VarChar(255)
 
   user    User                       @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
   actions ActionFormationFormateur[]
   seances Seance[]
+  files    File[]
+  presences Presence[]
 }
 
 model Participant {
@@ -45,6 +44,7 @@ model Participant {
   user         User                         @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
   actions      ActionFormationParticipant[]
   attestations Attestation[]
+  presences Presence[]
 }
 
 model Domaine {
@@ -64,7 +64,7 @@ model Theme {
 }
 
 model ActionFormation {
-  action_id             Int       @id @default(autoincrement())
+  action_id             Int      @id @default(autoincrement())
   type_action           String   @db.VarChar(50)
   date_debut            DateTime
   date_fin              DateTime
@@ -80,20 +80,25 @@ model ActionFormation {
   participants ActionFormationParticipant[]
   attestations Attestation[]
   seances      Seance[]
+  files    File[]
 }
 
 model Seance {
-  senace_id    Int          @id @default(autoincrement())
+  seance_id Int @id @default(autoincrement())
+  action_id Int
   date         DateTime?
   heure        String?      @db.VarChar(50)
   duree_heures Int?
   statut       SeanceStatut @default(EN_ATTENTE)
-  action_id    Int
   formateur_id String
 
-  action    ActionFormation @relation(fields: [senace_id], references: [action_id], onDelete: Cascade)
+  action    ActionFormation @relation(fields: [action_id], references: [action_id], onDelete: Cascade)
   formateur Formateur       @relation(fields: [formateur_id], references: [user_id], onDelete: Cascade)
+
+  presences Presence[]
 }
+
+
 
 model ActionFormationFormateur {
   action_id    Int
@@ -126,6 +131,48 @@ model Attestation {
 
   participant Participant     @relation(fields: [participant_id], references: [user_id], onDelete: Cascade)
   action      ActionFormation @relation(fields: [action_id], references: [action_id], onDelete: Cascade)
+   @@unique([participant_id, action_id])
+}
+
+model File {
+  file_id           Int        @id @default(autoincrement())
+  file_path         String     @db.VarChar(255)
+  type              FileType
+  formateur_id String?
+  action_id         Int?
+  validated       Boolean? @default(false)
+  validated_at DateTime? @default(now())
+  
+  formateur Formateur? @relation(fields: [formateur_id], references: [user_id])
+  action    ActionFormation?    @relation(fields: [action_id], references: [action_id])
+}
+
+model Presence {
+  presence_id   Int       @id @default(autoincrement())
+  status        PresenceStatus @default(PRESENT)
+  noted_at      DateTime  @default(now())
+  
+  participant   Participant      @relation(fields: [participant_id], references: [user_id])
+  participant_id String
+  
+  seance        Seance    @relation(fields: [seance_id], references: [seance_id])
+  seance_id     Int
+  
+  formateur     Formateur? @relation(fields: [formateur_id], references: [user_id])
+  formateur_id  String?
+
+  @@unique([participant_id, seance_id]) 
+}
+
+enum PresenceStatus {
+  PRESENT
+  ABSENT
+}
+
+enum FileType {
+  CV
+  BADGE
+  FEUILLE_EMARGEMENT
 }
 
 enum SeanceStatut {
@@ -133,4 +180,11 @@ enum SeanceStatut {
   EN_COURS
   TERMINEE
   ANNULEE
+}
+
+enum RoleName {
+  ADMIN
+  Gestionnaire
+  FORMATEUR
+  PARTICIPANT
 }

@@ -13,6 +13,7 @@ import { FormationModule } from './formation/formation.module';
 import { ActionFfModule } from './action-ff/action-ff.module';
 import { ActionFpModule } from './action-fp/action-fp.module';
 import { AttestationModule } from './attestation/attestation.module';
+import { FileModule } from './file/file.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { AttestationModule } from './attestation/attestation.module';
     ActionFfModule,
     ActionFpModule,
     AttestationModule,
+    FileModule,
   ],
   controllers: [AppController],
   providers: [AppService, ClerkService],
