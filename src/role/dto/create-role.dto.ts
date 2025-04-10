@@ -1,3 +1,4 @@
+import { RoleName } from '@prisma/client';
 import { IsString, Length, Matches } from 'class-validator';
 
 export class CreateRoleDto {
@@ -6,5 +7,5 @@ export class CreateRoleDto {
   @Matches(/^[a-zA-Z\s]+$/, {
     message: 'Role name can only contain letters and spaces',
   })
-  role_name: string;
+  role_name: RoleName;
 }

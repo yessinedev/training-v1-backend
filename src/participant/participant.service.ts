@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateUserParticipantDto } from './dto/create-user-participant.dto';
-import { PrismaService } from 'src/prisma/prisma/prisma.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { ClerkService } from 'src/clerk/clerk.service';
 import { validateOrReject } from 'class-validator';
 import { UpdateParticipantDto } from './dto/update-participant.dto';

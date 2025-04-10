@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { DomaineService } from './domaine.service';
 import { DomaineController } from './domaine.controller';
-import { PrismaService } from 'src/prisma/prisma/prisma.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Module({
   controllers: [DomaineController],

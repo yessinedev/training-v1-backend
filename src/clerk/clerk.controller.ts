@@ -1,6 +1,6 @@
 import { Controller, Post, Req, Res, HttpStatus } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { PrismaService } from 'src/prisma/prisma/prisma.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Controller('webhooks/clerk')
 export class ClerkController {
@@ -24,6 +24,20 @@ export class ClerkController {
         return res.status(HttpStatus.NOT_FOUND).send();
       }
 
+      const participant = await this.prisma.participant.findUnique({
+        where: {
+          user_id: user.user_id,
+        },
+      });
+
+      const formateur = await this.prisma.formateur.findUnique({
+        where: {
+          user_id: user.user_id,
+        },
+      });
+
+      
+
       await this.prisma.user.update({
         where: {
           email: email,
@@ -33,23 +47,36 @@ export class ClerkController {
         },
       });
 
-      await this.prisma.participant.update({
-        where: {
-          user_id: user.user_id,
-        },
-        data: {
-          user_id: finalUserId,
-        },
-      });
+      if (participant) {
+        await this.prisma.participant.update({
+          where: {
+            user_id: user.user_id,
+          },
+          data: {
+            user_id: finalUserId,
+          },
+        });
+      }
 
-      await this.prisma.formateur.update({
-        where: {
-          user_id: user.user_id,
-        },
-        data: {
-          user_id: finalUserId,
-        },
-      });
+      if (formateur) {
+        await this.prisma.formateur.update({
+          where: {
+            user_id: user.user_id,
+          },
+          data: {
+            user_id: finalUserId,
+          },
+        });
+
+        await this.prisma.file.updateMany({
+          where: {
+            formateur_id: user.user_id,
+          },
+          data: {
+            formateur_id: finalUserId,
+          },
+        });
+      }
 
       console.log(`User created: ${finalUserId} (${email})`);
     }

@@ -9,7 +9,7 @@ export class FileController {
 
   @Post()
   create(@Body() createFileDto: CreateFileDto) {
-    return this.fileService.create(createFileDto);
+    return this.fileService.createFile(createFileDto);
   }
 
   @Get()

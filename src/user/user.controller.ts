@@ -16,13 +16,13 @@ import { ClerkAuthGuard } from 'src/guards/clerk.guard';
 import { Roles } from 'src/decorators/role.decorator';
 import { RolesGuard } from 'src/guards/role.guard';
 
-@Controller('user')
+@Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('create')
-  @UseGuards(ClerkAuthGuard, RolesGuard)
-  @Roles('ADMIN')
+  //@UseGuards(ClerkAuthGuard, RolesGuard)
+  //@Roles('ADMIN')
   async create(@Body() createUserDto: CreateUserDto) {
     return await this.userService.create(createUserDto);
   }

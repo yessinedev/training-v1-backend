@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { PrismaService } from 'src/prisma/prisma/prisma.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { ClerkService } from 'src/clerk/clerk.service';
 
 @Injectable()
@@ -29,7 +29,6 @@ export class UserService {
           role_name: userRole?.role_name!,
         },
       });
-
       const user_id = clerkUser.id;
       const email = createUserDto.email;
       const prenom = createUserDto.prenom;
@@ -37,7 +36,7 @@ export class UserService {
       const telephone = createUserDto.telephone || '';
       let role_id = createUserDto.role_id;
 
-      await this.prisma.user.create({
+      const user = await this.prisma.user.create({
         data: {
           user_id,
           email,
@@ -48,7 +47,7 @@ export class UserService {
         },
       });
 
-      return { message: 'User created successfully' };
+      return { ...user};
     } catch (error) {
       console.error('Error creating user:', error);
       throw new Error('Failed to create user');

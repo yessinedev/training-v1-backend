@@ -184,7 +184,7 @@ enum SeanceStatut {
 
 enum RoleName {
   ADMIN
-  Gestionnaire
+  GESTIONNAIRE
   FORMATEUR
   PARTICIPANT
 }

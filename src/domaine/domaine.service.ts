@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { PrismaService } from "src/prisma/prisma/prisma.service";
+import { PrismaService } from "src/prisma/prisma.service";
 import { CreateDomaineDto } from "./dto/create-domaine.dto";
 import { UpdateDomaineDto } from "./dto/update-domaine.dto";
 

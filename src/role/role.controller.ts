@@ -23,22 +23,22 @@ export class RoleController {
   constructor(private readonly roleService: RoleService) {}
 
   @Get()
-  @UseGuards(ClerkAuthGuard, RolesGuard)
-  @Roles('ADMIN')
+  //@UseGuards(ClerkAuthGuard, RolesGuard)
+  //@Roles('ADMIN')
   async getAllRoles() {
     return this.roleService.getAllRoles();
   }
 
   @Post()
-  @UseGuards(ClerkAuthGuard, RolesGuard)
-  @Roles('ADMIN')
+  //@UseGuards(ClerkAuthGuard, RolesGuard)
+  //@Roles('ADMIN')
   async createRole(@Body() createRoleDto: CreateRoleDto) {
     return this.roleService.createRole(createRoleDto);
   }
 
   @Put(':id')
-  @UseGuards(ClerkAuthGuard, RolesGuard)
-  @Roles('ADMIN')
+  //@UseGuards(ClerkAuthGuard, RolesGuard)
+  //@Roles('ADMIN')
   async updateRole(
     @Param('id', ParseIntPipe) role_id: number,
     @Body() updateRoleDto: CreateRoleDto,
@@ -47,8 +47,8 @@ export class RoleController {
   }
 
   @Delete()
-  @UseGuards(ClerkAuthGuard, RolesGuard)
-  @Roles('ADMIN')
+  //@UseGuards(ClerkAuthGuard, RolesGuard)
+  //@Roles('ADMIN')
   async deleteRole(@Query('id', ParseIntPipe) role_id: number) {
     return this.roleService.deleteRole(role_id);
   }

@@ -1,4 +1,4 @@
-import { PrismaService } from "src/prisma/prisma/prisma.service";
+import { PrismaService } from "src/prisma/prisma.service";
 import { CreateThemeDto } from "./dto/create-theme.dto";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { UpdateThemeDto } from "./dto/update-theme.dto";
