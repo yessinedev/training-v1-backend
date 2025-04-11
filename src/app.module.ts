@@ -14,6 +14,7 @@ import { ActionFfModule } from './action-ff/action-ff.module';
 import { ActionFpModule } from './action-fp/action-fp.module';
 import { AttestationModule } from './attestation/attestation.module';
 import { FileModule } from './file/file.module';
+import { SeanceModule } from './seance/seance.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { FileModule } from './file/file.module';
     ActionFpModule,
     AttestationModule,
     FileModule,
+    SeanceModule,
   ],
   controllers: [AppController],
   providers: [AppService, ClerkService],

@@ -10,7 +10,7 @@ import { ParticipantService } from './participant.service';
 import { CreateUserParticipantDto } from './dto/create-user-participant.dto';
 import { CreateParticipantDto } from './dto/create-participant.dto';
 
-@Controller('participant')
+@Controller('participants')
 export class ParticipantController {
   constructor(private readonly participantService: ParticipantService) {}
 

@@ -13,6 +13,4 @@ export class CreateParticipantDto {
   @IsString()
   poste: string;
 
-  @IsNumber()
-  role_id: number;
 }
