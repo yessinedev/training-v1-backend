@@ -1,9 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { SeanceService } from './seance.service';
 import { CreateSeanceDto } from './dto/create-seance.dto';
 import { UpdateSeanceDto } from './dto/update-seance.dto';
 
-@Controller('seance')
+@Controller('seances')
 export class SeanceController {
   constructor(private readonly seanceService: SeanceService) {}
 
@@ -20,6 +28,11 @@ export class SeanceController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.seanceService.findOne(+id);
+  }
+
+  @Get('formation/:id')
+  findByFormationId(@Param('id') id: string) {
+    return this.seanceService.findByFormationId(+id);
   }
 
   @Patch(':id')

@@ -3,12 +3,15 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateFormationDto } from './dto/create-formation.dto';
 import { UpdateFormationDto } from './dto/update-formation.dto';
 import { ActionFfService } from 'src/action-ff/action-ff.service';
+import { SeanceService } from 'src/seance/seance.service';
+import { getDatesBetween } from 'src/utils';
 
 @Injectable()
 export class FormationService {
   constructor(
     private prisma: PrismaService,
     private actionFfService: ActionFfService,
+    private seanceService: SeanceService
   ) {}
 
   async getAll() {
@@ -54,6 +57,8 @@ export class FormationService {
     return formation;
   }
 
+  
+  
   async create(data: CreateFormationDto) {
     const { user_id, ...formationData } = data;
 
@@ -73,6 +78,22 @@ export class FormationService {
       await this.actionFfService.create(actionFormation.action_id, user_id);
     }
 
+    const seanceDates = getDatesBetween(
+      new Date(actionFormation.date_debut),
+      new Date(actionFormation.date_fin)
+    );
+  
+    for (const date of seanceDates) {
+      console.log(date)
+      await this.seanceService.create({
+        action_id: actionFormation.action_id,
+        date: date,
+        heure: '9', 
+        duree_heures: 3,
+        statut: 'EN_ATTENTE',
+        formateur_id: user_id, 
+      });
+    }
     return actionFormation;
   }
 
