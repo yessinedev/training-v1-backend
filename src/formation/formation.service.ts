@@ -19,6 +19,7 @@ export class FormationService {
       include: {
         theme: { include: { domaine: true } },
         formateurs: { include: { formateur: { include: { user: true } } } },
+        seances: true,
       },
     });
   }
@@ -47,6 +48,7 @@ export class FormationService {
             },
           },
         },
+        seances: true,
       },
     });
 
@@ -82,18 +84,19 @@ export class FormationService {
       new Date(actionFormation.date_debut),
       new Date(actionFormation.date_fin)
     );
-  
     for (const date of seanceDates) {
       console.log(date)
       await this.seanceService.create({
         action_id: actionFormation.action_id,
         date: date,
-        heure: '9', 
+        heure: '9:00', 
         duree_heures: 3,
         statut: 'EN_ATTENTE',
         formateur_id: user_id, 
       });
+
     }
+
     return actionFormation;
   }
 
