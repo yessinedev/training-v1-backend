@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  BadRequestException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import {
   AddParticipantDto,
@@ -13,16 +9,14 @@ import {
 export class ActionFpService {
   constructor(private readonly prisma: PrismaService) {}
 
-  // Fetch all participants for a formation
   async getParticipants(formationId: number) {
     const participants = await this.prisma.actionFormationParticipant.findMany({
       where: { action_id: formationId },
       include: {
         participant: {
-          include: { user: true},
+          include: { user: true },
         },
         action: true,
-        
       },
     });
 
@@ -91,7 +85,6 @@ export class ActionFpService {
     };
   }
 
-  // Remove a participant from a formation
   async removeParticipant(formationId: number, participantId: string) {
     try {
       await this.prisma.actionFormationParticipant.delete({
@@ -105,7 +98,7 @@ export class ActionFpService {
 
       return { message: 'Participant removed successfully' };
     } catch (error) {
-      throw new NotFoundException('Failed to remove participant');
+      throw new NotFoundException('Failed to remove participant', error);
     }
   }
 }

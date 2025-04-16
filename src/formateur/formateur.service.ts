@@ -68,13 +68,18 @@ export class FormateurService {
 
   async findAll() {
     return this.prisma.formateur.findMany({
-      include: { user: { include: { role: true } } },
+      include: {
+        user: { include: { role: true } },
+        files: true,
+        seances: true,
+      },
     });
   }
 
   async update(id: string, updateFormateurDto: UpdateFormateurDto) {
     const existing = await this.prisma.formateur.findUnique({
       where: { user_id: id },
+      include: { files: true },
     });
 
     if (!existing) {

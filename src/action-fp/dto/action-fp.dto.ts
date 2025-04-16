@@ -1,8 +1,8 @@
-import { IsEnum, IsInt, IsOptional, IsPositive } from "class-validator";
+import { IsEnum, IsInt, IsPositive } from 'class-validator';
 
 export enum ParticipantStatus {
-  CONFIRMED = "Confirmé",
-  PENDING = "En attente",
+  CONFIRMED = 'Confirmé',
+  PENDING = 'En attente',
   WAITLIST = "Liste d'attente",
 }
 

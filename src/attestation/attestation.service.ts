@@ -10,7 +10,7 @@ export class AttestationService {
       where: { action_id: formationId },
       include: {
         participant: {
-          include: { user: true}
+          include: { user: true },
         },
         action: { include: { theme: true } },
       },

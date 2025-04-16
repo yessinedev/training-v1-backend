@@ -1,4 +1,11 @@
-import { IsDateString, IsEnum, IsInt, IsOptional, IsString, MaxLength } from 'class-validator';
+import {
+  IsDateString,
+  IsEnum,
+  IsInt,
+  IsOptional,
+  IsString,
+  MaxLength,
+} from 'class-validator';
 import { SeanceStatut } from '@prisma/client';
 
 export class CreateSeanceDto {
@@ -25,5 +32,3 @@ export class CreateSeanceDto {
   @IsString()
   formateur_id?: string;
 }
-
-

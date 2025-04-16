@@ -9,7 +9,6 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 import { ActionFfService } from './action-ff.service';
-import { ActionFfDto } from './dto/create-action-ff.dto';
 
 @Controller('formations/:formationId/formateurs')
 export class ActionFfController {

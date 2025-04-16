@@ -25,8 +25,8 @@ export class UserService {
       const clerkUser = await this.clerkService.createUser({
         email: createUserDto.email,
         role: {
-          role_id: userRole?.role_id!,
-          role_name: userRole?.role_name!,
+          role_id: userRole?.role_id,
+          role_name: userRole?.role_name,
         },
       });
       const user_id = clerkUser.id;
@@ -34,7 +34,7 @@ export class UserService {
       const prenom = createUserDto.prenom;
       const nom = createUserDto.nom;
       const telephone = createUserDto.telephone || '';
-      let role_id = createUserDto.role_id;
+      const role_id = createUserDto.role_id;
 
       const user = await this.prisma.user.create({
         data: {
@@ -47,7 +47,7 @@ export class UserService {
         },
       });
 
-      return { ...user};
+      return { ...user };
     } catch (error) {
       console.error('Error creating user:', error);
       throw new Error('Failed to create user');

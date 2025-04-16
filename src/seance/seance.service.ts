@@ -16,7 +16,9 @@ export class SeanceService {
   }
 
   async findOne(id: number) {
-    const seance = await this.prisma.seance.findUnique({ where: { seance_id: id } });
+    const seance = await this.prisma.seance.findUnique({
+      where: { seance_id: id },
+    });
     if (!seance) throw new NotFoundException(`Seance with ID ${id} not found`);
     return seance;
   }

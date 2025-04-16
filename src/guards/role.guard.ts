@@ -12,7 +12,7 @@ import { ROLES_KEY } from 'src/decorators/role.decorator';
 export class RolesGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
+  canActivate(context: ExecutionContext): boolean {
     const requiredRoles = this.reflector.getAllAndOverride<string[]>(
       ROLES_KEY,
       [context.getHandler(), context.getClass()],
@@ -30,7 +30,7 @@ export class RolesGuard implements CanActivate {
     }
 
     // Get single role from Clerk user metadata
-    const userRole = user.publicMetadata?.role.role_name;
+    const userRole: string = user.publicMetadata?.role.role_name;
     // console.log('user-role', userRole);
     if (!userRole) {
       throw new ForbiddenException('User role not found');

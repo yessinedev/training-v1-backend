@@ -11,7 +11,7 @@ export class FormationService {
   constructor(
     private prisma: PrismaService,
     private actionFfService: ActionFfService,
-    private seanceService: SeanceService
+    private seanceService: SeanceService,
   ) {}
 
   async getAll() {
@@ -59,8 +59,6 @@ export class FormationService {
     return formation;
   }
 
-  
-  
   async create(data: CreateFormationDto) {
     const { user_id, ...formationData } = data;
 
@@ -82,19 +80,18 @@ export class FormationService {
 
     const seanceDates = getDatesBetween(
       new Date(actionFormation.date_debut),
-      new Date(actionFormation.date_fin)
+      new Date(actionFormation.date_fin),
     );
     for (const date of seanceDates) {
-      console.log(date)
+      console.log(date);
       await this.seanceService.create({
         action_id: actionFormation.action_id,
         date: date,
-        heure: '9:00', 
+        heure: '9:00',
         duree_heures: 3,
         statut: 'EN_ATTENTE',
-        formateur_id: user_id, 
+        formateur_id: user_id,
       });
-
     }
 
     return actionFormation;

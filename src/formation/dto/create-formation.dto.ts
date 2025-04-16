@@ -1,4 +1,11 @@
-import { IsInt, IsOptional, IsPositive, IsString, MinLength, MaxLength, IsDateString } from 'class-validator';
+import {
+  IsInt,
+  IsOptional,
+  IsPositive,
+  IsString,
+  MinLength,
+  IsDateString,
+} from 'class-validator';
 
 export class CreateFormationDto {
   @IsString()
@@ -35,5 +42,3 @@ export class CreateFormationDto {
   @IsOptional()
   user_id?: string;
 }
-
-

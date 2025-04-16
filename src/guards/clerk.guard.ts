@@ -16,8 +16,10 @@ export class ClerkAuthGuard implements CanActivate {
       throw new UnauthorizedException('No token provided');
     }
 
-    const token = authHeader.replace('Bearer ', '');
-
+    const token: string = authHeader.replace('Bearer ', '');
+    if (!token) {
+      throw new UnauthorizedException('Invalid token format');
+    }
     try {
       // Verify the JWT token using the correct method
       const payload = await verifyToken(token, {

@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, Query, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Body,
+  Param,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { FormationService } from './formation.service';
 import { CreateFormationDto } from './dto/create-formation.dto';
 import { UpdateFormationDto } from './dto/update-formation.dto';
@@ -12,8 +21,8 @@ export class FormationController {
     return this.formationService.getAll();
   }
 
-  @Get(":formationId")
-  async getFormation(@Param("formationId", ParseIntPipe) formationId: number) {
+  @Get(':formationId')
+  async getFormation(@Param('formationId', ParseIntPipe) formationId: number) {
     return this.formationService.getById(formationId);
   }
 
@@ -25,7 +34,7 @@ export class FormationController {
   @Put(':id')
   async updateFormation(
     @Param('id', ParseIntPipe) action_id: number,
-    @Body() updateFormationDto: UpdateFormationDto
+    @Body() updateFormationDto: UpdateFormationDto,
   ) {
     return this.formationService.update(action_id, updateFormationDto);
   }

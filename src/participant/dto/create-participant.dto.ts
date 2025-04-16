@@ -1,7 +1,4 @@
-import {
-  IsNumber,
-  IsString,
-} from 'class-validator';
+import { IsString } from 'class-validator';
 
 export class CreateParticipantDto {
   @IsString()
@@ -12,5 +9,4 @@ export class CreateParticipantDto {
 
   @IsString()
   poste: string;
-
 }

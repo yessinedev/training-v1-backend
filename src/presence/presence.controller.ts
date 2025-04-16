@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { PresenceService } from './presence.service';
 import { CreatePresenceDto } from './dto/create-presence.dto';
 import { UpdatePresenceDto } from './dto/update-presence.dto';
@@ -23,7 +31,10 @@ export class PresenceController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePresenceDto: UpdatePresenceDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updatePresenceDto: UpdatePresenceDto,
+  ) {
     return this.presenceService.update(+id, updatePresenceDto);
   }
 

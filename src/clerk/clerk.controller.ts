@@ -36,8 +36,6 @@ export class ClerkController {
         },
       });
 
-      
-
       await this.prisma.user.update({
         where: {
           email: email,

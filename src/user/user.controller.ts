@@ -3,11 +3,11 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   UseGuards,
   Query,
+  Put,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -21,15 +21,15 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('create')
-  //@UseGuards(ClerkAuthGuard, RolesGuard)
-  //@Roles('ADMIN')
+  @UseGuards(ClerkAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'GESTIONNAIRE')
   async create(@Body() createUserDto: CreateUserDto) {
     return await this.userService.create(createUserDto);
   }
 
   @Get('all')
-  // @UseGuards(ClerkAuthGuard, RolesGuard)
-  // @Roles('ADMIN')
+  @UseGuards(ClerkAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'GESTIONNAIRE')
   async findAll(@Query('roleId') roleId?: string) {
     return await this.userService.findAll(roleId);
   }
@@ -39,7 +39,7 @@ export class UserController {
     return this.userService.findOne(id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(id, updateUserDto);
   }

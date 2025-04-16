@@ -1,7 +1,7 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { PrismaService } from "src/prisma/prisma.service";
-import { CreateDomaineDto } from "./dto/create-domaine.dto";
-import { UpdateDomaineDto } from "./dto/update-domaine.dto";
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { CreateDomaineDto } from './dto/create-domaine.dto';
+import { UpdateDomaineDto } from './dto/update-domaine.dto';
 
 @Injectable()
 export class DomaineService {
@@ -19,7 +19,9 @@ export class DomaineService {
   }
 
   async update(domaineId: number, updateData: UpdateDomaineDto) {
-    const domaine = await this.prisma.domaine.findUnique({ where: { domaine_id: domaineId } });
+    const domaine = await this.prisma.domaine.findUnique({
+      where: { domaine_id: domaineId },
+    });
 
     if (!domaine) {
       throw new NotFoundException(`Domain with ID ${domaineId} not found`);
@@ -33,7 +35,9 @@ export class DomaineService {
   }
 
   async delete(domaineId: number) {
-    const domaine = await this.prisma.domaine.findUnique({ where: { domaine_id: domaineId } });
+    const domaine = await this.prisma.domaine.findUnique({
+      where: { domaine_id: domaineId },
+    });
 
     if (!domaine) {
       throw new NotFoundException(`Domain with ID ${domaineId} not found`);
