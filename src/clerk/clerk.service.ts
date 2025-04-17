@@ -24,4 +24,18 @@ export class ClerkService {
       redirectUrl: 'http://localhost:3000/sign-in',
     });
   }
+
+  async removeUser(userId: string) {
+    try {
+      if(userId.startsWith('inv')) {
+        await this.clerkClient.invitations.revokeInvitation(userId);
+        return { message: 'Invitation revoked successfully' };
+      }
+      await this.clerkClient.users.deleteUser(userId);
+      return { message: 'User deleted successfully' };
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      throw new Error('Failed to delete user');
+    }
+  }
 }

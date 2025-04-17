@@ -81,10 +81,15 @@ export class UserService {
   }
 
   async remove(id: string) {
-    return await this.prisma.user.delete({
+    const removedUser = await this.prisma.user.delete({
       where: {
         user_id: id,
       },
     });
+
+    if (removedUser) {
+      await this.clerkService.removeUser(removedUser.user_id);
+      return { message: 'User removed successfully' };
+    }
   }
 }

@@ -5,6 +5,8 @@ import {
   Body,
   HttpCode,
   HttpStatus,
+  Delete,
+  Param,
 } from '@nestjs/common';
 import { ParticipantService } from './participant.service';
 import { CreateUserParticipantDto } from './dto/create-user-participant.dto';
@@ -31,7 +33,13 @@ export class ParticipantController {
   }
 
   @Get()
-  findAll() {
-    return this.participantService.findAll();
+  async findAll() {
+    return await this.participantService.findAll();
   }
+
+  @Delete(':id')
+  async deleteParticipant(@Param ('id') id: string) {
+    return await this.participantService.deleteParticipant(id);
+  }
+
 }
