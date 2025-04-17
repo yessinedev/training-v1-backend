@@ -24,6 +24,7 @@ model User {
   role        Role         @relation(fields: [role_id], references: [role_id], onDelete: Restrict)
   formateur   Formateur?
   participant Participant?
+  surveys     Survey[]
 }
 
 model Formateur {
@@ -45,6 +46,7 @@ model Participant {
   actions      ActionFormationParticipant[]
   attestations Attestation[]
   presences    Presence[]
+  Response     Response[]
 }
 
 model Domaine {
@@ -90,7 +92,7 @@ model Seance {
   heure        String?      @db.VarChar(50)
   duree_heures Int?
   statut       SeanceStatut @default(EN_ATTENTE)
-  formateur    Formateur?    @relation(fields: [formateur_id], references: [user_id], onDelete: Cascade)
+  formateur    Formateur?   @relation(fields: [formateur_id], references: [user_id], onDelete: Cascade)
   formateur_id String?
 
   action ActionFormation @relation(fields: [action_id], references: [action_id], onDelete: Cascade)
@@ -161,6 +163,52 @@ model Presence {
   formateur_id String?
 
   @@unique([participant_id, seance_id])
+}
+
+model Survey {
+  id          String     @id @default(cuid())
+  title       String
+  description String?
+  questions   Question[]
+  responses   Response[]
+  status      String     @default("draft") // draft, published, closed
+  createdBy   User       @relation(fields: [createdById], references: [user_id])
+  createdById String
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Question {
+  id        String   @id @default(cuid())
+  text      String
+  type      String // text, multiple_choice, checkbox, etc.
+  options   Json? // For multiple choice options
+  required  Boolean  @default(false)
+  survey    Survey   @relation(fields: [surveyId], references: [id])
+  surveyId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Answer    Answer[]
+}
+
+model Response {
+  id            String       @id @default(cuid())
+  survey        Survey       @relation(fields: [surveyId], references: [id])
+  surveyId      String
+  participant   Participant? @relation(fields: [participantId], references: [user_id])
+  participantId String?
+  answers       Answer[]
+  createdAt     DateTime     @default(now())
+}
+
+model Answer {
+  id         String   @id @default(cuid())
+  question   Question @relation(fields: [questionId], references: [id])
+  questionId String
+  response   Response @relation(fields: [responseId], references: [id])
+  responseId String
+  content    Json 
+  createdAt  DateTime @default(now())
 }
 
 enum PresenceStatus {

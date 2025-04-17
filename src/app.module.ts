@@ -16,6 +16,7 @@ import { AttestationModule } from './attestation/attestation.module';
 import { FileModule } from './file/file.module';
 import { SeanceModule } from './seance/seance.module';
 import { PresenceModule } from './presence/presence.module';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { PresenceModule } from './presence/presence.module';
     FileModule,
     SeanceModule,
     PresenceModule,
+    PrismaModule
   ],
   controllers: [AppController],
   providers: [AppService, ClerkService],
