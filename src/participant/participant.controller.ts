@@ -32,6 +32,14 @@ export class ParticipantController {
     }
   }
 
+  @Post('create-user-participant')
+  @HttpCode(HttpStatus.CREATED)
+  async createUserParticipant(
+    @Body() createDto: CreateUserParticipantDto,
+  ) {
+    return await this.participantService.createParticipantAndUser(createDto);
+  }
+
   @Get()
   async findAll() {
     return await this.participantService.findAll();

@@ -171,7 +171,7 @@ model Survey {
   description String?
   questions   Question[]
   responses   Response[]
-  status      String     @default("draft") // draft, published, closed
+  status      String     @default("draft")
   createdBy   User       @relation(fields: [createdById], references: [user_id])
   createdById String
   createdAt   DateTime   @default(now())

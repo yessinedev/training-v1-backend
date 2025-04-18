@@ -10,7 +10,10 @@ import {
   UseInterceptors,
   BadRequestException,
 } from '@nestjs/common';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import {
+  FileFieldsInterceptor,
+  FilesInterceptor,
+} from '@nestjs/platform-express';
 import { FormateurService } from './formateur.service';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { CreateFormateurDto } from './dto/create-formateur.dto';
@@ -30,25 +33,39 @@ export class FormateurController {
 
   @Post()
   @UseInterceptors(
-    FilesInterceptor('files', 2, {
-      fileFilter: (_, file, callback) => {
-        if (file.mimetype.match(/\/(pdf|jpeg|png)$/)) {
-          callback(null, true);
-        } else {
-          callback(new BadRequestException('Invalid file type'), false);
-        }
+    FileFieldsInterceptor(
+      [
+        { name: 'CV', maxCount: 1 },
+        { name: 'BADGE', maxCount: 1 },
+        { name: 'FEUILLE_ELARGEMENT', maxCount: 1 },
+      ],
+      {
+        fileFilter: (_, file, callback) => {
+          if (file.mimetype.match(/\/(pdf|jpeg|png)$/)) {
+            callback(null, true);
+          } else {
+            callback(new BadRequestException('Invalid file type'), false);
+          }
+        },
       },
-    }),
+    ),
   )
   async create(
     @Body() createDto: CreateFormateurDto,
-    @UploadedFiles() files: Express.Multer.File[],
+    @UploadedFiles() files: {
+      CV: Express.Multer.File[];
+      BADGE?: Express.Multer.File[];
+      // FEUILLE_ELARGEMENT?: Express.Multer.File[];
+    },
   ) {
+    const allFiles: Express.Multer.File[] = [];
+    if (files.CV) allFiles.push(...files.CV);
+    if (files.BADGE) allFiles.push(...files.BADGE);
     return this.formateurService.create(
       {
         ...createDto,
       },
-      files,
+      allFiles,
     );
   }
 

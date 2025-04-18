@@ -17,6 +17,7 @@ import { FileModule } from './file/file.module';
 import { SeanceModule } from './seance/seance.module';
 import { PresenceModule } from './presence/presence.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { SurveyModule } from './survey/survey.module';
 
 @Module({
   imports: [
@@ -34,7 +35,8 @@ import { PrismaModule } from './prisma/prisma.module';
     FileModule,
     SeanceModule,
     PresenceModule,
-    PrismaModule
+    PrismaModule,
+    SurveyModule
   ],
   controllers: [AppController],
   providers: [AppService, ClerkService],

@@ -29,8 +29,8 @@ export class FormateurService {
 
       // Process files in parallel
       const fileUploadPromises = files.map(async (file) => {
-        const fileType = this.determineFileType(file.fieldname);
-        const uploadPath = `formateurs/${fileType.toLowerCase()}/${
+        const fileType = this.determineFileType(file.fieldname); // Use the helper method
+        const uploadPath = `formateurs/${file.fieldname.toLowerCase()}/${ // Use original fieldname for path
           formateur.user_id
         }`;
 
@@ -42,9 +42,9 @@ export class FormateurService {
 
         return {
           filePath: uploadedFile,
-          type: fileType,
+          type: fileType, // Assign the correct FileType enum
           formateurId: formateur.user_id,
-          validated: fileType === FileType.BADGE ? false : true, // Example validation logic
+          validated: fileType === FileType.BADGE ? false : true, // Validation logic based on FileType
         };
       });
 
