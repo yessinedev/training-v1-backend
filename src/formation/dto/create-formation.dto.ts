@@ -5,6 +5,7 @@ import {
   IsString,
   MinLength,
   IsDateString,
+  IsNumber,
 } from 'class-validator';
 
 export class CreateFormationDto {
@@ -29,6 +30,9 @@ export class CreateFormationDto {
   @IsInt()
   @IsPositive()
   duree_heures: number;
+  @IsNumber()
+  @IsPositive()
+  prix_unitaire?: number;
 
   @IsString()
   @MinLength(1)

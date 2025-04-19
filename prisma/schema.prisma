@@ -14,98 +14,93 @@ model Role {
 }
 
 model User {
-  user_id   String @id
-  email     String @unique @db.VarChar(255)
-  nom       String @db.VarChar(100)
-  prenom    String @db.VarChar(100)
-  telephone String @db.VarChar(50)
-  role_id   Int
-
-  role        Role         @relation(fields: [role_id], references: [role_id], onDelete: Restrict)
+  user_id     String       @id
+  email       String       @unique @db.VarChar(255)
+  nom         String       @db.VarChar(100)
+  prenom      String       @db.VarChar(100)
+  telephone   String       @db.VarChar(50)
+  role_id     Int
   formateur   Formateur?
   participant Participant?
   surveys     Survey[]
+  role        Role         @relation(fields: [role_id], references: [role_id])
 }
 
 model Formateur {
-  user_id String @id
-
-  user      User                       @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
-  actions   ActionFormationFormateur[]
-  seances   Seance[]
-  files     File[]
-  presences Presence[]
+  user_id      String                     @id
+  tarif_heure  Float?
+  tarif_jour   Float?
+  tarif_seance Float?
+  actions      ActionFormationFormateur[]
+  files        File[]
+  user         User                       @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  presences    Presence[]
+  seances      Seance[]
 }
 
 model Participant {
-  user_id    String @id
-  entreprise String @db.VarChar(100)
-  poste      String @db.VarChar(100)
-
-  user         User                         @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  user_id      String                       @id
+  entreprise   String                       @db.VarChar(100)
+  poste        String                       @db.VarChar(100)
   actions      ActionFormationParticipant[]
   attestations Attestation[]
+  user         User                         @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
   presences    Presence[]
   Response     Response[]
 }
 
 model Domaine {
-  domaine_id      Int    @id @default(autoincrement())
-  libelle_domaine String @db.VarChar(100)
-
-  themes Theme[]
+  domaine_id      Int     @id @default(autoincrement())
+  libelle_domaine String  @db.VarChar(100)
+  themes          Theme[]
 }
 
 model Theme {
-  theme_id      Int    @id @default(autoincrement())
-  libelle_theme String @db.VarChar(100)
+  theme_id      Int               @id @default(autoincrement())
+  libelle_theme String            @db.VarChar(100)
   domaine_id    Int
-
-  domaine Domaine           @relation(fields: [domaine_id], references: [domaine_id], onDelete: Restrict)
-  actions ActionFormation[]
+  actions       ActionFormation[]
+  domaine       Domaine           @relation(fields: [domaine_id], references: [domaine_id])
 }
 
 model ActionFormation {
-  action_id             Int      @id @default(autoincrement())
-  type_action           String   @db.VarChar(50)
+  action_id             Int                          @id @default(autoincrement())
+  type_action           String                       @db.VarChar(50)
   date_debut            DateTime
   date_fin              DateTime
   duree_jours           Int?
   duree_heures          Int?
   nb_seances            Int?
-  lieu                  String   @db.VarChar(100)
+  prix_unitaire         Float?
+  lieu                  String                       @db.VarChar(100)
   nb_participants_prevu Int?
   theme_id              Int
-
-  theme        Theme                        @relation(fields: [theme_id], references: [theme_id], onDelete: Restrict)
-  formateurs   ActionFormationFormateur[]
-  participants ActionFormationParticipant[]
-  attestations Attestation[]
-  seances      Seance[]
-  files        File[]
+  theme                 Theme                        @relation(fields: [theme_id], references: [theme_id])
+  formateurs            ActionFormationFormateur[]
+  participants          ActionFormationParticipant[]
+  attestations          Attestation[]
+  files                 File[]
+  seances               Seance[]
 }
 
 model Seance {
-  seance_id    Int          @id @default(autoincrement())
-  action_id    Int
   date         DateTime?
-  heure        String?      @db.VarChar(50)
+  heure        String?         @db.VarChar(50)
   duree_heures Int?
-  statut       SeanceStatut @default(EN_ATTENTE)
-  formateur    Formateur?   @relation(fields: [formateur_id], references: [user_id], onDelete: Cascade)
+  statut       SeanceStatut    @default(EN_ATTENTE)
+  action_id    Int
   formateur_id String?
-
-  action ActionFormation @relation(fields: [action_id], references: [action_id], onDelete: Cascade)
-
-  presences Presence[]
+  seance_id    Int             @id @default(autoincrement())
+  presences    Presence[]
+  action       ActionFormation @relation(fields: [action_id], references: [action_id], onDelete: Cascade)
+  formateur    Formateur?      @relation(fields: [formateur_id], references: [user_id], onDelete: Cascade)
 }
 
 model ActionFormationFormateur {
   action_id    Int
   formateur_id String
-
-  action    ActionFormation @relation(fields: [action_id], references: [action_id], onDelete: Cascade)
-  formateur Formateur       @relation(fields: [formateur_id], references: [user_id], onDelete: Cascade)
+  action       ActionFormation @relation(fields: [action_id], references: [action_id], onDelete: Cascade)
+  formateur    Formateur       @relation(fields: [formateur_id], references: [user_id], onDelete: Cascade)
 
   @@id([action_id, formateur_id])
 }
@@ -114,53 +109,48 @@ model ActionFormationParticipant {
   action_id        Int
   participant_id   String
   date_inscription DateTime?
-  statut           String?   @db.VarChar(50)
-
-  action      ActionFormation @relation(fields: [action_id], references: [action_id], onDelete: Cascade)
-  participant Participant     @relation(fields: [participant_id], references: [user_id], onDelete: Cascade)
+  statut           String?         @db.VarChar(50)
+  action           ActionFormation @relation(fields: [action_id], references: [action_id], onDelete: Cascade)
+  participant      Participant     @relation(fields: [participant_id], references: [user_id], onDelete: Cascade)
 
   @@id([action_id, participant_id])
 }
 
 model Attestation {
-  attestation_id Int       @id @default(autoincrement())
+  attestation_id Int             @id @default(autoincrement())
   participant_id String
   action_id      Int
   date_emission  DateTime?
-  qr_code_ref    String?   @unique @db.VarChar(255)
-
-  participant Participant     @relation(fields: [participant_id], references: [user_id], onDelete: Cascade)
-  action      ActionFormation @relation(fields: [action_id], references: [action_id], onDelete: Cascade)
+  qr_code_ref    String?         @unique @db.VarChar(255)
+  action         ActionFormation @relation(fields: [action_id], references: [action_id], onDelete: Cascade)
+  participant    Participant     @relation(fields: [participant_id], references: [user_id], onDelete: Cascade)
 
   @@unique([participant_id, action_id])
 }
 
 model File {
-  file_id      Int       @id @default(autoincrement())
-  file_path    String    @db.VarChar(255)
+  file_id      Int              @id @default(autoincrement())
+  file_path    String           @db.VarChar(255)
   type         FileType
   formateur_id String?
   action_id    Int?
-  validated    Boolean?  @default(false)
-  validated_at DateTime? @default(now())
-
-  formateur Formateur?       @relation(fields: [formateur_id], references: [user_id])
-  action    ActionFormation? @relation(fields: [action_id], references: [action_id])
+  validated    Boolean?         @default(false)
+  validated_at DateTime?        @default(now())
+  title        String?          @db.VarChar(100)
+  action       ActionFormation? @relation(fields: [action_id], references: [action_id])
+  formateur    Formateur?       @relation(fields: [formateur_id], references: [user_id])
 }
 
 model Presence {
-  presence_id Int            @id @default(autoincrement())
-  status      PresenceStatus @default(PRESENT)
-  noted_at    DateTime       @default(now())
-
-  participant    Participant @relation(fields: [participant_id], references: [user_id])
+  presence_id    Int            @id @default(autoincrement())
+  status         PresenceStatus @default(PRESENT)
+  noted_at       DateTime       @default(now())
   participant_id String
-
-  seance    Seance @relation(fields: [seance_id], references: [seance_id])
-  seance_id Int
-
-  formateur    Formateur? @relation(fields: [formateur_id], references: [user_id])
-  formateur_id String?
+  seance_id      Int
+  formateur_id   String?
+  formateur      Formateur?     @relation(fields: [formateur_id], references: [user_id])
+  participant    Participant    @relation(fields: [participant_id], references: [user_id])
+  seance         Seance         @relation(fields: [seance_id], references: [seance_id])
 
   @@unique([participant_id, seance_id])
 }
@@ -169,47 +159,47 @@ model Survey {
   id          String     @id @default(cuid())
   title       String
   description String?
-  questions   Question[]
-  responses   Response[]
   status      String     @default("draft")
-  createdBy   User       @relation(fields: [createdById], references: [user_id])
   createdById String
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
+  questions   Question[]
+  responses   Response[]
+  createdBy   User       @relation(fields: [createdById], references: [user_id])
 }
 
 model Question {
   id        String   @id @default(cuid())
   text      String
-  type      String // text, multiple_choice, checkbox, etc.
-  options   Json? // For multiple choice options
+  type      String
+  options   Json?
   required  Boolean  @default(false)
-  order     Int
-  survey    Survey   @relation(fields: [surveyId], references: [id])
   surveyId  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  order     Int
   Answer    Answer[]
+  survey    Survey   @relation(fields: [surveyId], references: [id])
 }
 
 model Response {
   id            String       @id @default(cuid())
-  survey        Survey       @relation(fields: [surveyId], references: [id])
   surveyId      String
-  participant   Participant? @relation(fields: [participantId], references: [user_id])
   participantId String?
-  answers       Answer[]
   createdAt     DateTime     @default(now())
+  answers       Answer[]
+  participant   Participant? @relation(fields: [participantId], references: [user_id])
+  survey        Survey       @relation(fields: [surveyId], references: [id])
 }
 
 model Answer {
   id         String   @id @default(cuid())
-  question   Question @relation(fields: [questionId], references: [id])
   questionId String
-  response   Response @relation(fields: [responseId], references: [id])
   responseId String
-  content    Json 
+  content    Json
   createdAt  DateTime @default(now())
+  question   Question @relation(fields: [questionId], references: [id])
+  response   Response @relation(fields: [responseId], references: [id])
 }
 
 enum PresenceStatus {

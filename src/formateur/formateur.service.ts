@@ -43,6 +43,7 @@ export class FormateurService {
         return {
           filePath: uploadedFile,
           type: fileType, // Assign the correct FileType enum
+          title: `${fileType}_${formateur.user.nom}_${formateur.user.prenom} `, // Use the fileType for title
           formateurId: formateur.user_id,
           validated: fileType === FileType.BADGE ? false : true, // Validation logic based on FileType
         };

@@ -13,6 +13,7 @@ export class FileService {
       data: {
         file_path: fileData.filePath,
         type: fileData.type,
+        title: fileData.title,
         formateur_id: fileData.formateurId,
         action_id: fileData.actionId,
         validated: fileData.validated,
@@ -32,6 +33,7 @@ export class FileService {
           data: {
             file_path: file.filePath,
             type: file.type,
+            title: file.title,
             formateur_id: file.formateurId,
             action_id: file.actionId,
             validated: file.validated,
