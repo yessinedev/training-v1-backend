@@ -30,5 +30,6 @@ export class CreateSeanceDto {
   statut?: SeanceStatut;
 
   @IsString()
+  @IsOptional()
   formateur_id?: string;
 }

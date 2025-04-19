@@ -3,9 +3,9 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { SeanceService } from './seance.service';
 import { CreateSeanceDto } from './dto/create-seance.dto';
@@ -35,7 +35,7 @@ export class SeanceController {
     return this.seanceService.findByFormationId(+id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(@Param('id') id: string, @Body() updateSeanceDto: UpdateSeanceDto) {
     return this.seanceService.update(+id, updateSeanceDto);
   }
