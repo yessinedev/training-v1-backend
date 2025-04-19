@@ -1,5 +1,6 @@
 import {
-  Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards
+  Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards,
+  Put
 } from '@nestjs/common';
 import { SurveyService } from './survey.service';
 import { CreateSurveyDto } from './dto/create-survey.dto';
@@ -11,6 +12,7 @@ export class SurveyController {
 
   @Post()
   create(@Body() dto: CreateSurveyDto) {
+    console.log('Creating survey with data:', dto);
     return this.service.create(dto);
   }
 
@@ -24,7 +26,7 @@ export class SurveyController {
     return this.service.findOne(id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(@Param('id') id: string, @Body() dto: UpdateSurveyDto) {
     return this.service.update(id, dto);
   }

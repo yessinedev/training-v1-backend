@@ -184,6 +184,7 @@ model Question {
   type      String // text, multiple_choice, checkbox, etc.
   options   Json? // For multiple choice options
   required  Boolean  @default(false)
+  order     Int
   survey    Survey   @relation(fields: [surveyId], references: [id])
   surveyId  String
   createdAt DateTime @default(now())
