@@ -103,9 +103,7 @@ export class SurveyService {
               // Create new (using client-provided ID)
               await tx.question.create({
                 data: {
-                  ...questionData,
-                  id: questionDto.id, // Use the ID from the DTO
-                },
+                  ...questionData                },
               });
             }
           }
@@ -114,7 +112,7 @@ export class SurveyService {
         // Re-fetch the survey with updated questions to return the final state
         return tx.survey.findUniqueOrThrow({
           where: { id },
-          include: { questions: { orderBy: { createdAt: 'asc' } } }, // Include ordered questions
+          include: { questions: { orderBy: { order: 'asc' } } }, // Include ordered questions
         });
       });
 

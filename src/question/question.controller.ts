@@ -15,7 +15,7 @@ import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 import { Question } from '@prisma/client';
 
-@Controller('question')
+@Controller('questions')
 export class QuestionController {
   constructor(private readonly questionService: QuestionService) {}
 
