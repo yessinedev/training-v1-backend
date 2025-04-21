@@ -7,39 +7,63 @@ export class RoleService {
   constructor(private prisma: PrismaService) {}
 
   async getAllRoles() {
-    return this.prisma.role.findMany({
-      include: { users: true },
-    });
+    try {
+      return this.prisma.role.findMany({
+        include: { users: true },
+      });
+    } catch (error) {
+      throw new NotFoundException(
+        'Un erreur est survenu lors de la récupération des rôles',
+      );
+    }
   }
 
   async createRole(data: CreateRoleDto) {
-    return this.prisma.role.create({ data });
+    try {
+      return this.prisma.role.create({ data });
+    } catch (error) {
+      throw new NotFoundException(
+        'Un erreur est survenu lors de la création du rôle',
+      );
+    }
   }
 
   async updateRole(role_id: number, data: CreateRoleDto) {
-    const existingRole = await this.prisma.role.findUnique({
-      where: { role_id },
-    });
+    try {
+      const existingRole = await this.prisma.role.findUnique({
+        where: { role_id },
+      });
 
-    if (!existingRole) {
-      throw new NotFoundException('Role not found');
+      if (!existingRole) {
+        throw new NotFoundException('Role not found');
+      }
+
+      return this.prisma.role.update({
+        where: { role_id },
+        data,
+      });
+    } catch (error) {
+      throw new NotFoundException(
+        'Un erreur est survenu lors de la mise à jour du rôle',
+      );
     }
-
-    return this.prisma.role.update({
-      where: { role_id },
-      data,
-    });
   }
 
   async deleteRole(role_id: number) {
-    const existingRole = await this.prisma.role.findUnique({
-      where: { role_id },
-    });
+    try {
+      const existingRole = await this.prisma.role.findUnique({
+        where: { role_id },
+      });
 
-    if (!existingRole) {
-      throw new NotFoundException('Role not found');
+      if (!existingRole) {
+        throw new NotFoundException('Role not found');
+      }
+
+      return this.prisma.role.delete({ where: { role_id } });
+    } catch (error) {
+      throw new NotFoundException(
+        'Un erreur est survenu lors de la suppression du rôle',
+      );
     }
-
-    return this.prisma.role.delete({ where: { role_id } });
   }
 }

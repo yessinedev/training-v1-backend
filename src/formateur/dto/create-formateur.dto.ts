@@ -1,10 +1,6 @@
-import { IsString, IsNotEmpty } from 'class-validator';
+import { CreateUserDto } from 'src/user/dto/create-user.dto';
 
-export class CreateFormateurDto {
-  @IsNotEmpty()
-  @IsString()
-  user_id: string;
-
+export class CreateFormateurDto extends CreateUserDto {
   tarif_heure?: number;
   tarif_jour?: number;
   tarif_seance?: number;

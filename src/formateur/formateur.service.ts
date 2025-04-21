@@ -5,6 +5,7 @@ import { UpdateFormateurDto } from './dto/update-formateur.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { FileType, Formateur } from '@prisma/client';
 import { FileService } from 'src/file/file.service';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class FormateurService {
@@ -12,47 +13,54 @@ export class FormateurService {
     private prisma: PrismaService,
     private cloudinary: CloudinaryService,
     private fileService: FileService,
+    private userService: UserService,
   ) {}
 
   async create(
     createDto: CreateFormateurDto,
     files: Express.Multer.File[],
   ): Promise<Formateur> {
-    return this.prisma.$transaction(async (prismaTx) => {
-      // First create the user and formateur
-      const formateur = await prismaTx.formateur.create({
+    // 1️⃣ Upload files to Cloudinary first (parallel)
+    const uploadResults = await Promise.all(
+      files.map((file) => {
+        const fileType = this.determineFileType(file.fieldname);
+        const uploadPath = `formateurs/${fileType}/tmp`;
+        return this.cloudinary
+          .uploadFile(file.buffer, uploadPath, file.mimetype)
+          .then((url) => ({ url, fileType }));
+      }),
+    );
+
+    // 2️⃣ Now perform the DB transaction quickly
+    return this.prisma.$transaction(async (tx) => {
+      const user = await this.userService.create({
+        email: createDto.email,
+        nom: createDto.nom,
+        prenom: createDto.prenom,
+        telephone: createDto.telephone,
+        role_id: createDto.role_id,
+      });
+
+      const formateur = await tx.formateur.create({
         data: {
-          ...createDto,
+          user_id: user.user_id,
+          tarif_heure: createDto.tarif_heure,
+          tarif_jour: createDto.tarif_jour,
+          tarif_seance: createDto.tarif_seance,
         },
         include: { user: true },
       });
 
-      // Process files in parallel
-      const fileUploadPromises = files.map(async (file) => {
-        const fileType = this.determineFileType(file.fieldname); // Use the helper method
-        const uploadPath = `formateurs/${file.fieldname.toLowerCase()}/${ // Use original fieldname for path
-          formateur.user_id
-        }`;
+      // 3️⃣ Create file records in the same transaction
+      const fileCreateData = uploadResults.map(({ url, fileType }) => ({
+        file_path: url,
+        type: fileType,
+        title: `${fileType}_${formateur.user.nom}_${formateur.user.prenom}`,
+        formateur_id: formateur.user_id,
+        validated: fileType !== FileType.BADGE,
+      }));
 
-        const uploadedFile = await this.cloudinary.uploadFile(
-          file.buffer,
-          uploadPath,
-          file.mimetype,
-        );
-
-        return {
-          filePath: uploadedFile,
-          type: fileType, // Assign the correct FileType enum
-          title: `${fileType}_${formateur.user.nom}_${formateur.user.prenom} `, // Use the fileType for title
-          formateurId: formateur.user_id,
-          validated: fileType === FileType.BADGE ? false : true, // Validation logic based on FileType
-        };
-      });
-
-      const fileParams = await Promise.all(fileUploadPromises);
-
-      await this.fileService.createFilesTransactionally(fileParams, prismaTx);
-
+      await tx.file.createMany({ data: fileCreateData });
       return formateur;
     });
   }

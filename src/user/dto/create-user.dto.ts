@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import {
   IsEmail,
   IsNotEmpty,
@@ -24,6 +25,7 @@ export class CreateUserDto {
   @MaxLength(100)
   telephone: string;
   @IsNumber()
+  @Type(() => Number)
   @IsNotEmpty()
   role_id: number;
 }
