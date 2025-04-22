@@ -8,7 +8,6 @@ import {
   IsNumber,
 } from 'class-validator';
 
-
 export class CreateQuestionDto {
   @IsString()
   @IsNotEmpty()
@@ -16,10 +15,10 @@ export class CreateQuestionDto {
 
   @IsString()
   @IsNotEmpty()
-  type: string; 
+  type: string;
 
   @IsOptional()
-  @IsJSON() 
+  @IsJSON()
   options?: string;
   @IsOptional()
   @IsBoolean()

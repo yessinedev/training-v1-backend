@@ -1,16 +1,14 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateUserParticipantDto } from './dto/create-user-participant.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { ClerkService } from 'src/clerk/clerk.service';
-import { validateOrReject } from 'class-validator';
 import { UpdateParticipantDto } from './dto/update-participant.dto';
 import { CreateParticipantDto } from './dto/create-participant.dto';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class ParticipantService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly clerkService: ClerkService,
+    private readonly userService: UserService,
   ) {}
 
   async findAll() {
@@ -24,65 +22,54 @@ export class ParticipantService {
   }
 
   async createParticipant(createDto: CreateParticipantDto) {
-    return await this.prisma.participant.create({
-      data: createDto,
-      include: {
-        user: true,
-      },
-    });
+    try {
+      return await this.prisma.$transaction(async (tx) => {
+        const user = await this.userService.create({
+          email: createDto.email,
+          nom: createDto.nom,
+          prenom: createDto.prenom,
+          telephone: createDto.telephone,
+          role_id: createDto.role_id,
+        });
+
+        const participant = await tx.participant.create({
+          data: {
+            user_id: user.user_id,
+            entreprise: createDto.entreprise,
+            poste: createDto.poste,
+          },
+          include: { user: true },
+        });
+
+        return participant;
+      });
+    } catch (error) {
+      throw new BadRequestException('Error creating participant');
+    }
   }
 
-  async createParticipantAndUser(
-    createDto: CreateUserParticipantDto,
-  ): Promise<any> {
-    const userRole = await this.prisma.role.findUnique({
-      where: { role_id: createDto.role_id },
-    });
-
-    if (!userRole) {
-      throw new BadRequestException('Role not found');
-    }
-
-    const clerkUser = await this.clerkService.createUser({
-      email: createDto.email,
-      role: {
-        role_id: userRole.role_id,
-        role_name: userRole.role_name,
-      },
-    });
-
-    const user_id = clerkUser.id;
-
-    await this.prisma.user.create({
-      data: {
-        user_id,
-        email: createDto.email,
-        nom: createDto.nom,
-        prenom: createDto.prenom,
-        telephone: createDto.telephone,
-        role_id: userRole.role_id,
-      },
-    });
-
-    const participant = await this.prisma.participant.create({
-      data: {
-        user_id,
-        entreprise: createDto.entreprise,
-        poste: createDto.poste,
-      },
+  async findOne(participantId: string) {
+    const participant = await this.prisma.participant.findUnique({
+      where: { user_id: participantId },
       include: {
+        actions: { include: { action: true } },
+        attestations: true,
         user: true,
       },
     });
+
+    if (!participant) {
+      throw new BadRequestException('Participant not found');
+    }
 
     return participant;
   }
 
   async createManyParticipants(
-    dtos: CreateUserParticipantDto[],
+    dtos: CreateParticipantDto[],
   ): Promise<{ successful: any[]; failed: any[] }> {
     const results = await Promise.allSettled(
-      dtos.map((dto) => this.createParticipantAndUser(dto)),
+      dtos.map((dto) => this.createParticipant(dto)),
     );
 
     const successful = results
@@ -99,11 +86,21 @@ export class ParticipantService {
     participantId: string,
     updateData: UpdateParticipantDto,
   ) {
-    await validateOrReject(new UpdateParticipantDto(updateData));
-
     return await this.prisma.participant.update({
       where: { user_id: participantId },
-      data: updateData,
+      data: {
+        entreprise: updateData.entreprise,
+        poste: updateData.poste,
+        user: {
+          update: {
+            nom: updateData.nom,
+            prenom: updateData.prenom,
+            email: updateData.email,
+            telephone: updateData.telephone,
+            role_id: updateData.role_id,
+          },
+        },
+      },
       include: {
         actions: { include: { action: true } },
         attestations: true,

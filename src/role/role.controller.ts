@@ -20,9 +20,9 @@ import { Roles } from 'src/decorators/role.decorator';
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}
 
-  @Get()
-  @UseGuards(ClerkAuthGuard, RolesGuard)
-  @Roles('ADMIN')
+  // @Get()
+  // @UseGuards(ClerkAuthGuard, RolesGuard)
+  // @Roles('ADMIN')
   async getAllRoles() {
     return this.roleService.getAllRoles();
   }

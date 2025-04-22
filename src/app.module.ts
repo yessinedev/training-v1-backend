@@ -38,7 +38,7 @@ import { QuestionModule } from './question/question.module';
     PresenceModule,
     PrismaModule,
     SurveyModule,
-    QuestionModule
+    QuestionModule,
   ],
   controllers: [AppController],
   providers: [AppService, ClerkService],

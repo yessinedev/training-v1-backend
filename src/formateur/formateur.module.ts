@@ -8,6 +8,12 @@ import { ClerkService } from 'src/clerk/clerk.service';
 
 @Module({
   controllers: [FormateurController],
-  providers: [FormateurService, CloudinaryService, FileService, UserService, ClerkService],
+  providers: [
+    FormateurService,
+    CloudinaryService,
+    FileService,
+    UserService,
+    ClerkService,
+  ],
 })
 export class FormateurModule {}

@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service'; 
+import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 import { Question } from '@prisma/client';
@@ -25,14 +25,14 @@ export class QuestionService {
 
   async findAll(): Promise<Question[]> {
     return this.prisma.question.findMany({
-      include: { survey: true }, 
+      include: { survey: true },
     });
   }
 
   async findOne(id: string): Promise<Question> {
     const question = await this.prisma.question.findUnique({
       where: { id },
-      include: { survey: true }, 
+      include: { survey: true },
     });
     if (!question) {
       throw new NotFoundException(`Question with ID ${id} not found`);
@@ -43,7 +43,7 @@ export class QuestionService {
   async findBySurveyId(surveyId: string): Promise<Question[]> {
     return this.prisma.question.findMany({
       where: { surveyId },
-      include: { survey: true }, 
+      include: { survey: true },
     });
   }
 

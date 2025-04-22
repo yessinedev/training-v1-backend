@@ -27,7 +27,7 @@ export class ClerkService {
 
   async removeUser(userId: string) {
     try {
-      if(userId.startsWith('inv')) {
+      if (userId.startsWith('inv')) {
         await this.clerkClient.invitations.revokeInvitation(userId);
         return { message: 'Invitation revoked successfully' };
       }

@@ -1,12 +1,12 @@
 import { IsString, IsOptional, IsEnum } from 'class-validator';
 
 export class CreateSurveyDto {
-  @IsString() 
+  @IsString()
   title: string;
   @IsString()
   createdById: string;
-  @IsString() 
-  @IsOptional() 
+  @IsString()
+  @IsOptional()
   description?: string;
   @IsString()
   @IsEnum(['draft', 'published', 'closed'])

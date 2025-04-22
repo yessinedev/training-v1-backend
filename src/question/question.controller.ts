@@ -52,7 +52,9 @@ export class QuestionController {
   }
 
   @Get('survey/:surveyId')
-  async findBySurveyId(@Param('surveyId') surveyId: string): Promise<Question[]> {
+  async findBySurveyId(
+    @Param('surveyId') surveyId: string,
+  ): Promise<Question[]> {
     try {
       return await this.questionService.findBySurveyId(surveyId);
     } catch (error) {
@@ -62,7 +64,6 @@ export class QuestionController {
       throw error;
     }
   }
-  
 
   @Patch(':id')
   async update(

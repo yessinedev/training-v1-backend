@@ -12,8 +12,11 @@ async function bootstrap() {
   });
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true, // Strips properties not defined in DTO
-      transform: true, // Automatically transforms payloads to DTO instances
+      whitelist: true,
+      transform: true,
+      transformOptions: {
+        exposeUnsetFields: true,
+      },
     }),
   );
   await app.listen(process.env.PORT ?? 3000);

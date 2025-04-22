@@ -88,7 +88,7 @@ export class SurveyService {
               text: questionDto.text,
               type: questionDto.type,
               required: questionDto.required,
-              options: questionDto.options, 
+              options: questionDto.options,
               order: index, // Set order based on array index
               surveyId: id, // Ensure association
             };
@@ -103,7 +103,8 @@ export class SurveyService {
               // Create new (using client-provided ID)
               await tx.question.create({
                 data: {
-                  ...questionData                },
+                  ...questionData,
+                },
               });
             }
           }
