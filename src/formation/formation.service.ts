@@ -19,6 +19,17 @@ export class FormationService {
       include: {
         theme: { include: { domaine: true } },
         formateurs: { include: { formateur: { include: { user: true } } } },
+        participants: {
+          include: {
+            participant: {
+              include: {
+                user: true,
+                attestations: true,
+                actions: true,
+              },
+            },
+          },
+        },
         seances: true,
       },
     });
