@@ -1,4 +1,4 @@
-import { IsEnum, IsInt, IsPositive } from 'class-validator';
+import { IsEnum, IsInt, IsPositive, IsString } from 'class-validator';
 
 export enum ParticipantStatus {
   CONFIRMED = 'Confirmé',
@@ -13,8 +13,7 @@ export class GetParticipantsDto {
 }
 
 export class UpdateParticipantStatusDto {
-  @IsInt()
-  @IsPositive()
+  @IsString()
   participant_id: string;
 
   @IsEnum(ParticipantStatus)
@@ -22,8 +21,7 @@ export class UpdateParticipantStatusDto {
 }
 
 export class AddParticipantDto {
-  @IsInt()
-  @IsPositive()
+  @IsString()
   participant_id: string;
 
   @IsEnum(ParticipantStatus)

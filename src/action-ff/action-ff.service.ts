@@ -19,6 +19,7 @@ export class ActionFfService {
   }
 
   async create(formationId: number, formateurId: string) {
+    console.log(typeof formateurId);
     return await this.prisma.actionFormationFormateur.create({
       data: {
         action_id: formationId,

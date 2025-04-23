@@ -20,7 +20,7 @@ import { Roles } from 'src/decorators/role.decorator';
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}
 
-  // @Get()
+  @Get()
   // @UseGuards(ClerkAuthGuard, RolesGuard)
   // @Roles('ADMIN')
   async getAllRoles() {

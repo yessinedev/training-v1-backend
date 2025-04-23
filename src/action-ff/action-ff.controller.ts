@@ -22,7 +22,7 @@ export class ActionFfController {
   @Post()
   async create(
     @Param('formationId', ParseIntPipe) formationId: number,
-    @Body() formateurId: string,
+    @Body('formateurId') formateurId: string,
   ) {
     return await this.actionFfService.create(formationId, formateurId);
   }
