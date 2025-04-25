@@ -10,8 +10,10 @@ import { verifyToken } from '@clerk/backend';
 export class ClerkAuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const authHeader = request.headers.authorization;
-
+    if (request.method === 'OPTIONS') {
+      return true;
+    }
+    const authHeader = request.headers.authorization!;
     if (!authHeader) {
       throw new UnauthorizedException('No token provided');
     }
@@ -21,17 +23,13 @@ export class ClerkAuthGuard implements CanActivate {
       throw new UnauthorizedException('Invalid token format');
     }
     try {
-      // Verify the JWT token using the correct method
       const payload = await verifyToken(token, {
         secretKey: process.env.CLERK_SECRET_KEY,
-        authorizedParties: ['http://localhost:3000'], // Replace with your authorized parties
+        authorizedParties: ['http://localhost:3000'], 
       });
-      // Attach user payload to request
       request['user'] = payload;
-
       return true;
     } catch (error) {
-      console.error('Authentication error:', error);
       throw new UnauthorizedException('Invalid token');
     }
   }

@@ -1,4 +1,3 @@
-// role.guard.ts (updated for single-role check)
 import {
   CanActivate,
   ExecutionContext,
@@ -24,14 +23,11 @@ export class RolesGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest();
     const user = request.user;
-    // console.log('user', user);
     if (!user) {
       throw new ForbiddenException('User not authenticated');
     }
 
-    // Get single role from Clerk user metadata
-    const userRole: string = user.publicMetadata?.role.role_name;
-    // console.log('user-role', userRole);
+    const userRole: string = user.metadata?.role.role_name;
     if (!userRole) {
       throw new ForbiddenException('User role not found');
     }
@@ -41,6 +37,7 @@ export class RolesGuard implements CanActivate {
         `Required role: ${requiredRoles.join(' or ')}. Your role: ${userRole}`,
       );
     }
+
 
     return true;
   }

@@ -22,11 +22,9 @@ export class ActionFpService {
         
       },
     });
-    console.log(participants)
     return participants;
   }
 
-  // Update a participant's status
   async updateParticipantStatus(
     formationId: number,
     dto: UpdateParticipantStatusDto,

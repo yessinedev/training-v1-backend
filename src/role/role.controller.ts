@@ -21,8 +21,8 @@ export class RoleController {
   constructor(private readonly roleService: RoleService) {}
 
   @Get()
-  // @UseGuards(ClerkAuthGuard, RolesGuard)
-  // @Roles('ADMIN')
+  @UseGuards(ClerkAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'GESTIONNAIRE')
   async getAllRoles() {
     return this.roleService.getAllRoles();
   }
