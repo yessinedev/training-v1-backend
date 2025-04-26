@@ -14,12 +14,14 @@ export class ActionFpService {
       where: { action_id: formationId },
       include: {
         participant: {
-          include: { user: true, attestations: {
-            where: {action_id: formationId}
-          }},
+          include: {
+            user: true,
+            attestations: {
+              where: { action_id: formationId },
+            },
+          },
         },
         action: true,
-        
       },
     });
     return participants;

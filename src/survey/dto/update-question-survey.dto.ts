@@ -1,5 +1,4 @@
 import {
-  IsArray,
   IsBoolean,
   IsEnum,
   IsJSON,
@@ -9,12 +8,12 @@ import {
 
 export class UpdateQuestionWithinSurveyDto {
   @IsString()
-  id: string; // Existing or new client-generated ID
+  id: string;
 
   @IsString()
   text: string;
 
-  @IsEnum(['text', 'multiple_choice', 'checkbox', 'rating', 'boolean']) // Match your QuestionType
+  @IsEnum(['text', 'multiple_choice', 'checkbox', 'rating', 'boolean'])
   type: 'text' | 'multiple_choice' | 'checkbox' | 'rating' | 'boolean';
 
   @IsJSON()

@@ -6,7 +6,6 @@ import {
   Delete,
   Body,
   Param,
-  Query,
   ParseIntPipe,
   UseGuards,
 } from '@nestjs/common';
@@ -44,10 +43,10 @@ export class RoleController {
     return this.roleService.updateRole(role_id, updateRoleDto);
   }
 
-  @Delete()
+  @Delete(':id')
   @UseGuards(ClerkAuthGuard, RolesGuard)
   @Roles('ADMIN')
-  async deleteRole(@Query('id', ParseIntPipe) role_id: number) {
+  async deleteRole(@Param('id', ParseIntPipe) role_id: number) {
     return this.roleService.deleteRole(role_id);
   }
 }

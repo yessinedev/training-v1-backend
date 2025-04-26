@@ -3,11 +3,8 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
-  Req,
-  UseGuards,
   Put,
 } from '@nestjs/common';
 import { SurveyService } from './survey.service';

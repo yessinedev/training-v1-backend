@@ -17,19 +17,17 @@ import { Roles } from 'src/decorators/role.decorator';
 import { RolesGuard } from 'src/guards/role.guard';
 
 @Controller('users')
+@UseGuards(ClerkAuthGuard, RolesGuard)
+@Roles('ADMIN', 'GESTIONNAIRE')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('create')
-  // @UseGuards(ClerkAuthGuard, RolesGuard)
-  // @Roles('ADMIN', 'GESTIONNAIRE')
   async create(@Body() createUserDto: CreateUserDto) {
     return await this.userService.create(createUserDto);
   }
 
   @Get('all')
-  // @UseGuards(ClerkAuthGuard, RolesGuard)
-  // @Roles('ADMIN', 'GESTIONNAIRE')
   async findAll(@Query('roleId') roleId?: string) {
     return await this.userService.findAll(roleId);
   }
