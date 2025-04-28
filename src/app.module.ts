@@ -18,7 +18,8 @@ import { SeanceModule } from './seance/seance.module';
 import { PresenceModule } from './presence/presence.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { SurveyModule } from './survey/survey.module';
-import { QuestionModule } from './question/question.module';
+import { ResponseModule } from './response/response.module';
+import { AnswerModule } from './answer/answer.module';
 
 @Module({
   imports: [
@@ -38,7 +39,8 @@ import { QuestionModule } from './question/question.module';
     PresenceModule,
     PrismaModule,
     SurveyModule,
-    QuestionModule,
+    ResponseModule,
+    AnswerModule,
   ],
   controllers: [AppController],
   providers: [AppService, ClerkService],
