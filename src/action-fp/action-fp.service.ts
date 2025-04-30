@@ -104,4 +104,18 @@ export class ActionFpService {
       throw new NotFoundException('Failed to remove participant', error);
     }
   }
+
+  async getActionsByParticipantId(participantId: string) {
+    try {
+      return await this.prisma.actionFormationParticipant.findMany({
+        where: { participant_id: participantId },
+        include: { action: true },
+      });
+    } catch (error) {
+      throw new NotFoundException(
+        'Failed to get actions by participant',
+        error,
+      );
+    }
+  }
 }
