@@ -52,9 +52,22 @@ export class ParticipantService {
     const participant = await this.prisma.participant.findUnique({
       where: { user_id: participantId },
       include: {
-        actions: { include: { action: true } },
+        actions: {
+          include: {
+            action: {
+              include: {
+                theme: {
+                  include: { domaine: true },
+                },
+                seances: true
+              },
+              
+            },
+          },
+        },
         attestations: true,
         user: true,
+        presences: true,
       },
     });
 

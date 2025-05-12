@@ -29,6 +29,10 @@ export class SeanceController {
   findOne(@Param('id') id: string) {
     return this.seanceService.findOne(+id);
   }
+  @Get('formateur/:id')
+  findByFormateurId(@Param('id') id: string) {
+    return this.seanceService.findByFormateurId(id);
+  }
 
   @Get('formation/:id')
   findByFormationId(@Param('id') id: string) {

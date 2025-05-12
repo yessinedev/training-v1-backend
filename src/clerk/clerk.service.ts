@@ -21,7 +21,13 @@ export class ClerkService {
           role_id: data.role.role_id,
         },
       },
-      redirectUrl: 'http://localhost:3000/sign-in',
+      redirectUrl:
+        data.role.role_name === 'ADMIN' ||
+        data.role.role_name === 'GESTIONNAIRE'
+          ? 'http://localhost:3000/dashboard'
+          : data.role.role_name === 'PARTICIPANT'
+            ? 'http://localhost:3000/espace-participant'
+            : 'http://localhost:3000/espace-formateur',
     });
   }
 

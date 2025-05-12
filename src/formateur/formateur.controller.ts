@@ -20,6 +20,11 @@ export class FormateurController {
     return this.formateurService.findAll();
   }
 
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    return this.formateurService.findOne(id);
+  }
+
   @Post()
   async create(@Body() createDto: CreateFormateurDto) {
     return this.formateurService.create(createDto);

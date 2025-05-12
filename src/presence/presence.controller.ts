@@ -11,7 +11,7 @@ import { PresenceService } from './presence.service';
 import { CreatePresenceDto } from './dto/create-presence.dto';
 import { UpdatePresenceDto } from './dto/update-presence.dto';
 
-@Controller('presence')
+@Controller('presences')
 export class PresenceController {
   constructor(private readonly presenceService: PresenceService) {}
 
@@ -23,6 +23,11 @@ export class PresenceController {
   @Get()
   findAll() {
     return this.presenceService.findAll();
+  }
+
+  @Get('seance/:id')
+  findBySeance(@Param('id') id: string) {
+    return this.presenceService.findBySeanceId(+id);
   }
 
   @Get(':id')

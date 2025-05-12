@@ -53,8 +53,22 @@ export class FormateurService {
     });
   }
 
-  // formateur.service.ts
-
+  async findOne(id: string) {
+    const formateur = await this.prisma.formateur.findUnique({
+      where: { user_id: id },
+      include: {
+        user: {
+          include: { role: true },
+        },
+        seances: true,
+      },
+    });
+    if (!formateur) {
+      throw new NotFoundException(`Formateur with ID ${id} not found`);
+    }
+    return formateur;
+  }
+  
   async update(id: string, dto: UpdateFormateurDto) {
     const existing = await this.prisma.formateur.findUnique({
       where: { user_id: id },

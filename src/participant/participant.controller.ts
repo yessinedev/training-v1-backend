@@ -36,6 +36,11 @@ export class ParticipantController {
     return await this.participantService.findAll();
   }
 
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    return await this.participantService.findOne(id);
+  }
+
   @Put(':id')
   async updateParticipant(
     @Param('id') id: string,

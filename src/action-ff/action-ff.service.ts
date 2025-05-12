@@ -60,4 +60,36 @@ export class ActionFfService {
 
     return { message: 'Trainer removed successfully' };
   }
+
+  async fetchFormationsByFormateurId(formateurId: string) {
+    const formations =  await this.prisma.actionFormationFormateur.findMany({
+      where: { formateur_id: formateurId },
+      include: {
+        action: {
+          include: {seances: {
+            include: {
+              action: {select: {
+                theme: true
+              }}
+            }
+          }, participants: true, theme: true}
+        },
+      },
+    });
+    console.log("formations: ", formations)
+    return formations;
+  }
+
+  async fetchFormateursByFormationId(formationId: string) {
+    return await this.prisma.actionFormationFormateur.findMany({
+      where: { action_id: parseInt(formationId) },
+      include: {
+        formateur: {
+          include: {
+            user: true,
+          },
+        },
+      },
+    });
+  }
 }

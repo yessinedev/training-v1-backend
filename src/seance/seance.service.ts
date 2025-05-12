@@ -30,6 +30,13 @@ export class SeanceService {
     });
   }
 
+  async findByFormateurId(formateurId: string) {
+    return this.prisma.seance.findMany({
+      where: { formateur_id: formateurId },
+      orderBy: { date: 'asc' },
+    });
+  }
+
   async update(id: number, updateSeanceDto: UpdateSeanceDto) {
     return this.prisma.seance.update({
       where: { seance_id: id },

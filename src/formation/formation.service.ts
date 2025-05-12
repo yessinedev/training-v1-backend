@@ -55,11 +55,13 @@ export class FormationService {
               include: {
                 attestations: true,
                 actions: true,
+                user: true,
               },
             },
           },
         },
         seances: true,
+        files: true,
       },
     });
 
