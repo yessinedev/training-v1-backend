@@ -19,7 +19,7 @@ export class ParticipantController {
 
   @Post('create')
   @HttpCode(HttpStatus.CREATED)
-  async createParticipants(@Body() createDto: CreateParticipantDto) {
+  async createParticipants(@Body() createDto: CreateParticipantDto | CreateParticipantDto[]) {
     if (Array.isArray(createDto)) {
       const { successful, failed } =
         await this.participantService.createManyParticipants(createDto);

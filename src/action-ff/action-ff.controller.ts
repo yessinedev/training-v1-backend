@@ -19,7 +19,7 @@ export class ActionFfController {
     return await this.actionFfService.findAll(formationId);
   }
   @Get('formation/:formationId/formateurs')
-  async fetchFormateursByFormationId(formationId: string) {
+  async fetchFormateursByFormationId(@Param('formationId') formationId: string) {
     return await this.actionFfService.fetchFormateursByFormationId(formationId);
   }
 

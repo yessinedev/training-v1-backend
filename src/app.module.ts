@@ -20,6 +20,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { SurveyModule } from './survey/survey.module';
 import { ResponseModule } from './response/response.module';
 import { AnswerModule } from './answer/answer.module';
+import { AnalyticsModule } from './analytics/analytics.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { AnswerModule } from './answer/answer.module';
     SurveyModule,
     ResponseModule,
     AnswerModule,
+    AnalyticsModule,
   ],
   controllers: [AppController],
   providers: [AppService, ClerkService],

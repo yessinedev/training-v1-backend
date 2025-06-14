@@ -9,7 +9,7 @@ export class CreateSurveyDto {
   @IsOptional()
   description?: string;
   @IsString()
-  @IsEnum(['draft', 'published', 'closed'])
+  @IsEnum(['brouillon', 'publié', 'archivé'])
   @IsOptional()
-  status?: 'draft' | 'published' | 'closed';
+  status?: 'brouillon' | 'publié' | 'archivé';
 }

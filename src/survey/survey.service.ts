@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateSurveyDto } from './dto/create-survey.dto';
 import { UpdateSurveyDto } from './dto/update-survey.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Survey } from '@prisma/client';
+import { Survey, Prisma } from '@prisma/client'; // Ensure Prisma is imported if not already
 
 @Injectable()
 export class SurveyService {
@@ -17,7 +17,7 @@ export class SurveyService {
 
   findAll() {
     return this.prisma.survey.findMany({
-      include: { questions: true, responses: true },
+      include: { questions: true, responses: true, formations: true  },
     });
   }
 
@@ -31,7 +31,7 @@ export class SurveyService {
   }
 
   async update(id: string, dto: UpdateSurveyDto): Promise<Survey> {
-    // Ensure the survey exists first
+    
     const existingSurvey = await this.prisma.survey.findUnique({
       where: { id },
     });
@@ -40,19 +40,26 @@ export class SurveyService {
     }
 
     try {
-      const updatedSurvey = await this.prisma.$transaction(async (tx) => {
+      return await this.prisma.$transaction(async (tx) => {
         // 1. Update survey's own fields (if provided in dto)
-        const surveyUpdateData: Partial<Survey> = {};
+        const surveyUpdateData: Prisma.SurveyUpdateInput = {}; // Use Prisma.SurveyUpdateInput for better type safety
         if (dto.title !== undefined) surveyUpdateData.title = dto.title;
         if (dto.description !== undefined)
           surveyUpdateData.description = dto.description;
         if (dto.status !== undefined) surveyUpdateData.status = dto.status;
-        // Add other updatable survey fields if necessary
+       
+        if (dto.action_ids !== undefined) {
+          surveyUpdateData.formations = {
+            set: dto.action_ids.map((action_id) => ({ action_id })),
+          };
+        }
+        
 
-        if (Object.keys(surveyUpdateData).length > 0) {
-          await tx.survey.update({
+        let updatedSurveyEntity = existingSurvey;
+        if (Object.keys(surveyUpdateData).length > 0) { // Check if there's anything to update
+          updatedSurveyEntity = await tx.survey.update({
             where: { id },
-            data: surveyUpdateData,
+            data: surveyUpdateData, // This now includes the formations 'set' operation
           });
         }
 
@@ -116,14 +123,20 @@ export class SurveyService {
           include: { questions: { orderBy: { order: 'asc' } } }, // Include ordered questions
         });
       });
-
-      return updatedSurvey;
     } catch (error) {
-      console.error('Error during survey update:', error);
-      throw new Error('Failed to update survey');
+      // Handle potential errors, e.g., if a formation_id in dto.formations doesn't exist
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') { // Record to update not found (can happen with nested writes if an ID is wrong)
+          throw new NotFoundException(
+            'Failed to update survey. One or more provided formation IDs might be invalid.',
+          );
+        }
+      }
+      console.error('Error updating survey:', error);
+      throw error; // Re-throw other errors
     }
     // Use a transaction for atomic updates
-  } // End of update method
+  } 
 
   remove(id: string) {
     return this.prisma.survey.delete({ where: { id } });

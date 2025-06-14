@@ -33,6 +33,8 @@ export class SurveyController {
 
   @Put(':id')
   update(@Param('id') id: string, @Body() dto: UpdateSurveyDto) {
+    console.log('Updating survey with ID:', id);
+    console.log('Update data:', dto);
     return this.service.update(id, dto);
   }
 
