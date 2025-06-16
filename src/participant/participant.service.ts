@@ -65,9 +65,24 @@ export class ParticipantService {
             },
           },
         },
-        attestations: true,
+        attestations: {
+          include: {
+            action: {
+              include: {
+                theme: {
+                  include: { domaine: true },
+                },
+                seances: true,
+              },
+            },
+          },
+        },
         user: true,
-        presences: true,
+        presences: {
+          include: {
+            seance: true,
+          }
+        },
       },
     });
 
