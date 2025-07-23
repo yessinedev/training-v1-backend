@@ -5,6 +5,7 @@ export interface TrainerPerformanceEntry {
   formateur_id: string;
   trainingsCount: number;
   revenue: number;
+  name?: string; // Added name field for trainer's full name
   // You might want to add attendanceRate here later if needed
   // attendanceRate?: number;
 }
@@ -99,7 +100,10 @@ export class AnalyticsService {
     return list.map((a) => ({
       action_id: a.action_id,
       title: a.theme.libelle_theme,
+      lieu: a.lieu,
+      type_action: a.type_action,
       participants: a._count.participants,
+      nb_participants_prevu: a.nb_participants_prevu,
       unit_price: a.prix_unitaire,
       revenue: (a.prix_unitaire ?? 0) * a._count.participants,
     }));
@@ -221,10 +225,23 @@ export class AnalyticsService {
       ORDER BY absences DESC
       LIMIT ${limit};
     `;
-    return raw.map((r) => ({
-      participant_id: r.participant_id,
-      absences: Number(r.absences),
-    }));
+
+    // Fetch participant names in parallel
+    const results = await Promise.all(
+      raw.map(async (r) => {
+        const participant = await this.prisma.user.findUnique({
+          where: { user_id: r.participant_id },
+          select: { nom: true, prenom: true },
+        });
+        return {
+          participant_id: r.participant_id,
+          name: participant ? `${participant.prenom} ${participant.nom}` : '',
+          absences: Number(r.absences),
+        };
+      })
+    );
+
+    return results;
   }
 
   // 4. Trainer Performance
@@ -234,38 +251,37 @@ export class AnalyticsService {
       await this.prisma.actionFormationFormateur.groupBy({
         by: ['formateur_id'],
         _count: {
-          action_id: true, // Corrected: Count 'action_id' directly
+          action_id: true,
         },
       });
 
     const result: TrainerPerformanceEntry[] = [];
 
     for (const t of trainingsByFormateur) {
-      // Fetch revenue for this specific formateur to optimize
-      const formateurRevenueData = await this.getRevenueByFormateur(); // This fetches all, consider optimizing if it becomes a bottleneck
+      // Fetch revenue for this specific formateur
+      const formateurRevenueData = await this.getRevenueByFormateur();
       const revenueObj = formateurRevenueData.find(
         (r) => r.formateur_id === t.formateur_id,
       );
 
-      // Note: getAttendanceRates() is called in each iteration.
-      // If it's expensive, consider fetching all rates once outside the loop and then filtering/mapping.
-      // const att = await this.getAttendanceRates();
-      // For now, I'll assume it's acceptable or will be optimized separately.
+      // Fetch trainer name
+      const user = await this.prisma.user.findUnique({
+        where: { user_id: t.formateur_id },
+        select: { nom: true, prenom: true },
+      });
 
       const perfEntry: TrainerPerformanceEntry = {
         formateur_id: t.formateur_id,
-        trainingsCount: t._count.action_id, // Access the count correctly
+        trainingsCount: t._count.action_id,
         revenue: revenueObj?.revenue || 0,
+        name: user ? `${user.prenom} ${user.nom}` : '', // Add trainer name
       };
       result.push(perfEntry);
     }
 
-    // Sort by trainingsCount. You might want to sort by revenue or a combined score later.
     result.sort((a, b) => b.trainingsCount - a.trainingsCount);
     return result.slice(0, limit);
   }
-
- 
 
   async getDropoutRates() {
     const raw = await this.prisma.$queryRaw<
@@ -312,8 +328,8 @@ export class AnalyticsService {
     return { averageDaysToIssue: raw[0]?.avg_time || 0 };
   }
 
-   // 5. Participant Satisfaction & Engagement
-   async getSurveyResponseRates(surveyId: string) {
+  // 5. Participant Satisfaction & Engagement
+  async getSurveyResponseRates(surveyId: string) {
     const totalQuestions = await this.prisma.question.count({
       where: { surveyId },
     });
